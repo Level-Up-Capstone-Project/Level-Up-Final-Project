@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Level Up transcript workflow response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "success",
+    "analysisType",
+    "analysis"
+  ],
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "const": true
+    },
+    "analysisType": {
+      "type": "string",
+      "const": "academic_transcript"
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "academicScore": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "institution": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 300
+        },
+        "qualification": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 300
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 5000
+        },
+        "modules": {
+          "type": "array",
+          "maxItems": 300,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["moduleName", "evidence"],
+            "properties": {
+              "moduleName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "mark": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 100
+              },
+              "evidence": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 3000
+              }
+            }
+          }
+        },
+        "detectedSkills": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "skillName",
+              "evidence"
+            ],
+            "properties": {
+              "skillName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "evidence": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 3000
+              }
+            }
+          }
+        },
+        "strengths": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        }
+      }
+    }
+  }
+}

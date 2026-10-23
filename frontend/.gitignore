@@ -1,0 +1,22 @@
+node_modules/
+.expo/
+dist/
+*.tsbuildinfo
+node_modules.incomplete/
+node_modules.remainder/
+dist-native/
+.tooling/
+.qa/
+
+.env
+.env.local
+server/.env
+
+# Local build verification and screenshots
+dist-check/
+artifacts/
+
+# Next.js output and local environment settings
+.next/
+out/
+.env*.local

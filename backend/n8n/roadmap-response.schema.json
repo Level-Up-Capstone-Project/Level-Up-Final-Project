@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["success", "requestId", "careerID", "roadmap"],
+  "properties": {
+    "success": {"const": true},
+    "requestId": {"type": "string", "format": "uuid"},
+    "careerID": {"type": "string", "format": "uuid"},
+    "roadmap": {
+      "type": "object", "additionalProperties": false,
+      "required": ["title", "items"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1, "maxLength": 150},
+        "items": {
+          "type": "array", "maxItems": 100,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["skillID", "title", "description", "priority"],
+            "properties": {
+              "skillID": {"type": "string", "format": "uuid"},
+              "title": {"type": "string", "minLength": 1, "maxLength": 150},
+              "description": {"type": "string", "minLength": 1, "maxLength": 2000},
+              "priority": {"enum": ["high", "medium", "low"]}
+            }
+          }
+        }
+      }
+    }
+  }
+}

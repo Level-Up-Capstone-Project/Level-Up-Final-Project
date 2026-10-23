@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["success", "requestId", "skillID", "attemptNumber", "assessment"],
+  "properties": {
+    "success": {"const": true},
+    "requestId": {"type": "string", "format": "uuid"},
+    "skillID": {"type": "string", "format": "uuid"},
+    "attemptNumber": {"type": "integer", "minimum": 1},
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["questions"],
+      "properties": {
+        "questions": {
+          "type": "array", "minItems": 3, "maxItems": 10,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["questionType", "questionText", "choices", "correctAnswer"],
+            "properties": {
+              "questionType": {"const": "MultipleChoice"},
+              "questionText": {"type": "string", "minLength": 1, "maxLength": 2000},
+              "choices": {"type": "array", "minItems": 3, "maxItems": 6, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 500}},
+              "correctAnswer": {"type": "string", "minLength": 1, "maxLength": 500}
+            }
+          }
+        }
+      }
+    }
+  }
+}

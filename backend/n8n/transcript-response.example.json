@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "analysisType": "academic_transcript",
+  "analysis": {
+    "academicScore": 86.5,
+    "institution": "Example University",
+    "qualification": "BSc",
+    "summary": "Two extracted modules. Review the marks against the original transcript.",
+    "modules": [
+      {
+        "moduleName": "Mathematics",
+        "mark": 82,
+        "evidence": "Mathematics 82%"
+      },
+      {
+        "moduleName": "Programming",
+        "mark": 91,
+        "evidence": "Programming 91%"
+      }
+    ],
+    "detectedSkills": [
+      {
+        "skillName": "Programming",
+        "evidence": "Programming 91%"
+      }
+    ],
+    "strengths": [
+      "Programming has the higher extracted mark."
+    ]
+  }
+}

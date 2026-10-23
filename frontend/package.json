@@ -1,0 +1,32 @@
+{
+  "name": "level-up-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack --port 3000",
+    "start": "next start --port 3000",
+    "build": "next build --webpack",
+    "typecheck": "tsc --noEmit",
+    "start:places": "node server/places.cjs",
+    "test": "node --test tests/*.test.cjs"
+  },
+  "dependencies": {
+    "next": "16.4.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-svg": "15.15.4",
+    "react-native-web": "^0.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "~19.2.0",
+    "@types/react-dom": "~19.2.0",
+    "react-test-renderer": "^19.2.3",
+    "typescript": "~6.0.3"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

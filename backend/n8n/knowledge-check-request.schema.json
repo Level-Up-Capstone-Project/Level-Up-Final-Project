@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["requestId", "skill", "course", "attemptNumber"],
+  "properties": {
+    "requestId": {"type": "string", "format": "uuid"},
+    "skill": {
+      "type": "object", "additionalProperties": false,
+      "required": ["skillID", "skillName"],
+      "properties": {"skillID": {"type": "string", "format": "uuid"}, "skillName": {"type": "string", "minLength": 1, "maxLength": 500}}
+    },
+    "course": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resourceID", "resourceName", "provider", "resourceType", "description"],
+      "properties": {
+        "resourceID": {"type": "string", "format": "uuid"},
+        "resourceName": {"type": "string", "minLength": 1, "maxLength": 500},
+        "provider": {"type": ["string", "null"], "maxLength": 500},
+        "resourceType": {"type": ["string", "null"], "maxLength": 100},
+        "description": {"type": ["string", "null"], "maxLength": 10000}
+      }
+    },
+    "attemptNumber": {"type": "integer", "minimum": 1}
+  }
+}

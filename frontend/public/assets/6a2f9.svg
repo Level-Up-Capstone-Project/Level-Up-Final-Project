@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Arrow Down">
+<mask id="mask0_0_51" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="2" width="10" height="6">
+<path id="Shape" fill-rule="evenodd" clip-rule="evenodd" d="M9.60844 2.27154C9.36437 2.02069 8.96866 2.02069 8.72459 2.27154L5.00001 6.09973L1.27543 2.27154C1.03136 2.02069 0.635649 2.02069 0.391581 2.27154C0.147513 2.5224 0.147513 2.92912 0.391581 3.17998L5.00001 7.9166L9.60844 3.17998C9.8525 2.92912 9.8525 2.5224 9.60844 2.27154Z" fill="#006FFD"/>
+</mask>
+<g mask="url(#mask0_0_51)">
+<rect id="Fill" x="0.000203443" y="-0.00068663" width="9.99961" height="9.99977" fill="#C5C6CC"/>
+</g>
+</g>
+</svg>

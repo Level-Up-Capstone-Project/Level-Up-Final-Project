@@ -1,0 +1,24 @@
+# Visual Studio and user-specific files
+.vs/
+*.user
+*.suo
+
+# .NET build output
+**/bin/
+**/obj/
+
+# Local configuration and secrets
+.env
+.env.*
+secrets.json
+appsettings.Local.json
+
+# Test and coverage output
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Operating-system files
+.DS_Store
+Thumbs.db

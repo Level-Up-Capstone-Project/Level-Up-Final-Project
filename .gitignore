@@ -1,0 +1,45 @@
+# JavaScript dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+
+# .NET build and test output
+[Bb]in/
+[Oo]bj/
+TestResults/
+
+# Local Python environments
+.venv/
+.venv-ocr/
+__pycache__/
+*.py[cod]
+
+# Local configuration, logs, and temporary artifacts
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+!frontend/.env.example
+backend/**/appsettings.Local.json
+backend/**/appsettings.*.local.json
+backend/**/*.pfx
+backend/**/*.p12
+backend/packages/
+backend/.ocr-build/
+backend/.ocr-test-build/
+*.log
+*.tmp
+*.temp
+*.zip
+
+# Editor and operating-system files
+.idea/
+.vscode/
+.vs/
+.DS_Store
+Thumbs.db
+Desktop.ini
