@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Career Readiness operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/career-readiness")]

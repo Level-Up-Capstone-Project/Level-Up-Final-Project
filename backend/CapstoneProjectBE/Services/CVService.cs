@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates CV service application behavior.
+    /// </summary>
     public class CVService : ICVService
     {
         private readonly AppDbContext _context;

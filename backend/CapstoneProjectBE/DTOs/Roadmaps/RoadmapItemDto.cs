@@ -1,6 +1,9 @@
 namespace CapstoneProjectBE.DTOs.Roadmaps
 {
     //one step in roadmap
+    /// <summary>
+    /// Carries Roadmap Item data between API clients and application services.
+    /// </summary>
     public class RoadmapItemDto
     {
         public Guid RoadmapItemID { get; set; }

@@ -11,6 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CapstoneProjectBE.Migrations
 {
+    /// <summary>
+    /// Applies or describes database schema changes for Backfill Roadmap Item Resources.
+    /// </summary>
     [DbContext(typeof(AppDbContext))]
     [Migration("20261023203937_BackfillRoadmapItemResources")]
     partial class BackfillRoadmapItemResources

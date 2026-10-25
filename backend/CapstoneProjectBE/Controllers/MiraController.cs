@@ -6,11 +6,17 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CapstoneProjectBE.Controllers;
 
+/// <summary>
+/// Handles HTTP requests for Mira operations.
+/// </summary>
 [Authorize]
 [ApiController]
 [Route("api/mira")]
 public sealed class MiraController(N8nAnalysisService workflow) : ControllerBase
 {
+    /// <summary>
+    /// Carries Chat Request request or response values used by the controller.
+    /// </summary>
     public sealed record ChatRequest(string? Message);
 
     [EnableRateLimiting("ai-workflow")]

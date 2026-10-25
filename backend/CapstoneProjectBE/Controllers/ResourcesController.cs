@@ -4,6 +4,9 @@ using CapstoneProjectBE.DTOs.Resources;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Resources operations.
+    /// </summary>
     [ApiController]
     [Route("api/resources")]
     public class ResourcesController : ControllerBase

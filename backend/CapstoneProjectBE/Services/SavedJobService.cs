@@ -8,6 +8,9 @@ using Npgsql;
 namespace CapstoneProjectBE.Services
 {
     //user's saved jobs
+    /// <summary>
+    /// Coordinates Saved Job service application behavior.
+    /// </summary>
     public class SavedJobService : ISavedJobService
     {
         private readonly AppDbContext _context;

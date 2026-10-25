@@ -2,6 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace CapstoneProjectBE.Services;
 
+/// <summary>
+/// Coordinates Personal Information Redactor application behavior.
+/// </summary>
 public static partial class PersonalInformationRedactor
 {
     private const string Redacted = "[REDACTED]";

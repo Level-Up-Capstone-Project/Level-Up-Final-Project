@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Saved Resources operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/saved-resources")]

@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.DTOs.Resources
 {
+    /// <summary>
+    /// Carries Learning Resource data between API clients and application services.
+    /// </summary>
     public class LearningResourceDto
     {
         public Guid ResourceID { get; set; }

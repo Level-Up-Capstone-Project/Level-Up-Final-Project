@@ -3,9 +3,18 @@ using CapstoneProjectBE.Services;
 
 namespace CapstoneProjectBE.ExternalServices.Roadmaps;
 
+/// <summary>
+/// Carries Generated Roadmap Item values used by an external integration.
+/// </summary>
 public sealed record GeneratedRoadmapItem(Guid SkillID, string Title, string Description, string Priority);
+/// <summary>
+/// Carries Generated Roadmap values used by an external integration.
+/// </summary>
 public sealed record GeneratedRoadmap(string Title, IReadOnlyList<GeneratedRoadmapItem> Items);
 
+/// <summary>
+/// Provides N8n Roadmap Generator integration behavior.
+/// </summary>
 public sealed class N8nRoadmapGenerator(
     N8nAnalysisService workflow,
     TextRoadmapGenerator fallback,

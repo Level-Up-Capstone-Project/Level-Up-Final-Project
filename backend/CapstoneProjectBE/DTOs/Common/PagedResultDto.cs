@@ -1,6 +1,9 @@
 namespace CapstoneProjectBE.DTOs.Common
 {
 
+    /// <summary>
+    /// Carries Paged Result data between API clients and application services.
+    /// </summary>
     public class PagedResultDto<T>
     {
         public List<T> Items { get; set; } = new List<T>();

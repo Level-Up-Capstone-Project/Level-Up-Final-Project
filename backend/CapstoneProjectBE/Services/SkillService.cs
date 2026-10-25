@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Skill service application behavior.
+    /// </summary>
     public class SkillService : ISkillService
     {
         private readonly AppDbContext _context;

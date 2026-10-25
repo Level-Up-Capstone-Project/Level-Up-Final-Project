@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Assessment service application behavior.
+    /// </summary>
     public class AssessmentService : IAssessmentService
     {
         private readonly AppDbContext _context;

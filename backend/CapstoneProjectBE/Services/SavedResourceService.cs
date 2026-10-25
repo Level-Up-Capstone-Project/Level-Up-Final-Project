@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Saved Resource service application behavior.
+    /// </summary>
     public class SavedResourceService : ISavedResourceService
     {
         private readonly AppDbContext _context;

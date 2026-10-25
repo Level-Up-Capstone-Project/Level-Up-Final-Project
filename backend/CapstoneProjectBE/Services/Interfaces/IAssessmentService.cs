@@ -2,6 +2,9 @@ using CapstoneProjectBE.DTOs.Assessments;
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the Assessment service abstraction.
+    /// </summary>
     public interface IAssessmentService
     {
         Task<AssessmentDto> StartAsync(Guid userId, StartAssessmentDto request, CancellationToken cancellationToken);

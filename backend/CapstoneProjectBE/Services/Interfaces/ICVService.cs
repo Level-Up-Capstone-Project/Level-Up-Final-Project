@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the CV service abstraction.
+    /// </summary>
     public interface ICVService
     {
         Task<CVDto> UploadAsync(Guid userId, IFormFile file, CancellationToken cancellationToken);

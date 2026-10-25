@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Assessment Question domain entity.
+    /// </summary>
     public class AssessmentQuestion
     {
         public Guid QuestionID { get; set; }

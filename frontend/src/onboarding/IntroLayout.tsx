@@ -4,7 +4,6 @@ import VignettePair from '../components/VignettePair';
 import { useEffect, useMemo } from 'react';
 import { Platform, BackHandler, Image, PanResponder, Pressable, ScrollView, StyleSheet, useWindowDimensions, View, type ImageSourcePropType } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import Text from '../components/Text';
 import LocalVector from './LocalVector';
 import ChevronRight from '../components/ChevronRight';
@@ -13,8 +12,8 @@ import type { Screen } from '../navigation/types';
 export type IntroProps = { go: (screen: Screen) => void };
 const pages: Screen[] = ['introAssessment', 'introGap', 'introTraining', 'introOpportunities'];
 /** Arranges introductory artwork, headings, descriptions and slide navigation. */
-export default function IntroLayout({ go, step, image, title, description, copyLeft, titleOffset = 0 }: IntroProps & {
-    step: number; image: ImageSourcePropType; title: string; description: string; copyLeft: number; titleOffset?: number;
+export default function IntroLayout({ go, step, image, title, description, copyLeft }: IntroProps & {
+    step: number; image: ImageSourcePropType; title: string; description: string; copyLeft: number;
 }) {
     const { width, height } = useWindowDimensions();
     const insets = useSafeAreaInsets();

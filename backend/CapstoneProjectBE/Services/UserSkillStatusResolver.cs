@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates User Skill Status Resolver application behavior.
+    /// </summary>
     public class UserSkillStatusResolver
     {
         public const string Missing = "missing";

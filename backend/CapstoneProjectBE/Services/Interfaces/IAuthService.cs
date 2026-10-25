@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the Auth service abstraction.
+    /// </summary>
     public interface IAuthService
     {
         Task<RegisterResponse?> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken);

@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Verification Code service application behavior.
+    /// </summary>
     public class VerificationCodeService : IVerificationCodeService
     {
         private readonly IPasswordHasher<EmailVerification> _codeHasher;

@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.DTOs.Jobs
 {
+    /// <summary>
+    /// Carries Job Match data between API clients and application services.
+    /// </summary>
     public class JobMatchDto
     {
         public Guid JobMatchID { get; set; }

@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.DTOs.CVs
 {
+    /// <summary>
+    /// Carries CVAnalysis data between API clients and application services.
+    /// </summary>
     public class CVAnalysisDto
     {
         public Guid AnalysisID { get; set; }

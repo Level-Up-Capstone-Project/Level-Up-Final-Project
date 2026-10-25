@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.DTOs.Profile
 {
+    /// <summary>
+    /// Carries Update Profile data between API clients and application services.
+    /// </summary>
     public class UpdateProfileDto
     {
         [Required]

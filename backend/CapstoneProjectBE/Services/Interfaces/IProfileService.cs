@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the Profile service abstraction.
+    /// </summary>
     public interface IProfileService
     {
         Task<ProfileDto?> GetProfileAsync(Guid userId, CancellationToken cancellationToken);

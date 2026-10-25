@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.DTOs.Assessments
 {
+    /// <summary>
+    /// Carries Assessment History data between API clients and application services.
+    /// </summary>
     public class AssessmentHistoryDto
     {
         public Guid SkillAssessmentID { get; set; }

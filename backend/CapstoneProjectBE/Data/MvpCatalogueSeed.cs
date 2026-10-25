@@ -265,8 +265,17 @@ internal static class MvpCatalogueSeed
 
     private static JobSpec J(int career, string title, string search) => new(career, title, search);
 
+    /// <summary>
+    /// Stores immutable Career Skill Spec values used to seed application data.
+    /// </summary>
     private sealed record CareerSkillSpec(int Career, int Skill, int Importance, bool Core);
+    /// <summary>
+    /// Stores immutable Resource Spec values used to seed application data.
+    /// </summary>
     private sealed record ResourceSpec(int Skill, string Name, string Type, string Url, string Provider,
         string Level, string Duration, string Description);
+    /// <summary>
+    /// Stores immutable Job Spec values used to seed application data.
+    /// </summary>
     private sealed record JobSpec(int Career, string Title, string Search);
 }

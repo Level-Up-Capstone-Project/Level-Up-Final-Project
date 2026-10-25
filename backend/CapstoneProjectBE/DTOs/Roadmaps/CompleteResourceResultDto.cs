@@ -1,6 +1,9 @@
 namespace CapstoneProjectBE.DTOs.Roadmaps
 {
     //result of marking resource complete
+    /// <summary>
+    /// Carries Complete Resource Result data between API clients and application services.
+    /// </summary>
     public class CompleteResourceResultDto
     {
         public Guid RoadmapItemResourceID { get; set; }

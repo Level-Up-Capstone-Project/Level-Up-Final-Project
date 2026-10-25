@@ -7,15 +7,12 @@ separate projects that run as separate development processes.
 ## Repository structure
 
 ```text
-LevelUp_Capstone/
+Level-Up-Final-Project/
 |-- frontend/              # Next.js application
 |-- backend/               # ASP.NET Core solution and API project
 |-- .gitignore
 `-- README.md
 ```
-
-The `.gitkeep` files only keep the empty application directories in Git. Remove
-them after the real project files have been copied into their directories.
 
 ## Prerequisites
 

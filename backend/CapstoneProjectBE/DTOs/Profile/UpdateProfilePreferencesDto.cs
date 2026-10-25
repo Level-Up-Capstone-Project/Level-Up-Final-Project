@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CapstoneProjectBE.DTOs.Profile
 {
+    /// <summary>
+    /// Carries Update Profile Preferences data between API clients and application services.
+    /// </summary>
     public class UpdateProfilePreferencesDto
     {
         [StringLength(100)]

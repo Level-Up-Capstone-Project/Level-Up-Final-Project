@@ -7,6 +7,9 @@ using Xunit;
 
 namespace CapstoneProjectBE.Tests;
 
+/// <summary>
+/// Verifies Email Service Registration behavior.
+/// </summary>
 public class EmailServiceRegistrationTests
 {
     [Fact]
@@ -70,6 +73,9 @@ public class EmailServiceRegistrationTests
     private static IConfiguration Configuration(Dictionary<string, string?> values) =>
         new ConfigurationBuilder().AddInMemoryCollection(values).Build();
 
+    /// <summary>
+    /// Verifies Test Environment behavior.
+    /// </summary>
     private sealed class TestEnvironment(string environmentName) : IHostEnvironment
     {
         public string EnvironmentName { get; set; } = environmentName;

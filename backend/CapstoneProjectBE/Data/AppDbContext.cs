@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Data
 {
+    /// <summary>
+    /// Provides App Db Context database configuration and lifecycle behavior.
+    /// </summary>
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)

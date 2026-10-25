@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.DTOs.Skills
 {
+    /// <summary>
+    /// Carries User Skill data between API clients and application services.
+    /// </summary>
     public class UserSkillDto
     {
         public Guid UserSkillID { get; set; }

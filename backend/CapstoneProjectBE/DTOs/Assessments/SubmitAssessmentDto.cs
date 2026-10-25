@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CapstoneProjectBE.DTOs.Assessments
 {
+    /// <summary>
+    /// Carries Submit Assessment data between API clients and application services.
+    /// </summary>
     public class SubmitAssessmentDto
     {
         [Required]
@@ -9,6 +12,9 @@ namespace CapstoneProjectBE.DTOs.Assessments
         public List<AssessmentResponseRequestDto> Responses { get; set; } = new();
     }
 
+    /// <summary>
+    /// Carries Assessment Response Request data between API clients and application services.
+    /// </summary>
     public class AssessmentResponseRequestDto
     {
         [Required]

@@ -76,15 +76,16 @@ export default function useLearningProgress(account: string, token?: string, tar
     const savedTopics=useMemo(()=>data.topics.filter(item=>item.resources.length>0&&item.resources.every(resource=>data.savedIDs.has(resource.resource.resourceID))).map(item=>item.title),[data.topics,data.savedIDs]);
 
     const completeResources=useCallback(async (selected:Topic, indexes:number[])=>{
-        if(!token)return;
+        if(!token)return false;
         const pending=indexes.filter(index=>selected.resources[index]&&!selected.resources[index].isCompleted);
-        if(!pending.length)return;
+        if(!pending.length)return true;
         const pendingIndexes=new Set(pending);
         setState(currentState=>({...currentState,topics:currentState.topics.map(item=>item.roadmapItemID!==selected.roadmapItemID?item:{...item,resources:item.resources.map((resource,index)=>pendingIndexes.has(index)?{...resource,isCompleted:true,completedAt:new Date().toISOString()}:resource)})}));
         try {
             await Promise.all(pending.map(index=>{const resource=selected.resources[index].resource;return apiRequest(`/api/roadmaps/items/${selected.roadmapItemID}/resources/${resource.resourceID}/complete`,{method:'POST',token});}));
             await load();
-        } catch(error){setState(currentState=>({...currentState,error:error instanceof Error?error.message:'Could not save learning progress.'}));await load();}
+            return true;
+        } catch(error){setState(currentState=>({...currentState,error:error instanceof Error?error.message:'Could not save learning progress.'}));await load();return false;}
     },[token,load]);
 
     const setChecked:Dispatch<SetStateAction<boolean[]>>=action=>{
@@ -93,11 +94,11 @@ export default function useLearningProgress(account: string, token?: string, tar
         const next=typeof action==='function'?action(previous):action;
         void completeResources(current,next.map((value,index)=>value&&!previous[index]?index:-1).filter(index=>index>=0));
     };
-    const setCompleted:Dispatch<SetStateAction<string[]>>=action=>{
-        const next=typeof action==='function'?action(completed):action;
-        const selected=data.topics.find(item=>next.includes(item.title)&&!completed.includes(item.title));
-        if(selected)void completeResources(selected,selected.resources.map((_,index)=>index));
-    };
+    const completeTopic=useCallback(async(name:string)=>{
+        const selected=data.topics.find(item=>item.title===name);
+        if(!selected)return false;
+        return completeResources(selected,selected.resources.map((_,index)=>index));
+    },[completeResources,data.topics]);
     const toggleSavedTopic=async()=>{
         if(!token||!current||!current.resources.length)return;
         const remove=savedTopics.includes(current.title);
@@ -111,7 +112,7 @@ export default function useLearningProgress(account: string, token?: string, tar
     };
 
     return {savedTopics,toggleSavedTopic,topic,setTopic,currentTopic:current,checked:current?.resources.map(resource=>resource.isCompleted)??[],setChecked,
-        completed,setCompleted,taskProgress,learningGroups,resourcesForTopic,roadmapCareerName:data.roadmap?.careerName??'',
+        completed,completeTopic,taskProgress,learningGroups,resourcesForTopic,roadmapCareerName:data.roadmap?.careerName??'',
         careerSuggestions:data.careerSuggestions,generatingCareerID:data.generatingCareerID,generateRoadmap,
         learningLoading:data.loading,learningError:data.error,reloadLearning:load};
 }

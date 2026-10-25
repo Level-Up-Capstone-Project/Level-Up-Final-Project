@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.DTOs.Assessments
 {
+    /// <summary>
+    /// Carries Assessment Result data between API clients and application services.
+    /// </summary>
     public class AssessmentResultDto
     {
         public Guid SkillAssessmentID { get; set; }
@@ -13,6 +16,9 @@ namespace CapstoneProjectBE.DTOs.Assessments
         public IReadOnlyList<AssessmentAnswerReviewDto> Answers { get; set; } = Array.Empty<AssessmentAnswerReviewDto>();
     }
 
+    /// <summary>
+    /// Carries Assessment Answer Review data between API clients and application services.
+    /// </summary>
     public class AssessmentAnswerReviewDto
     {
         public Guid QuestionID { get; set; }
@@ -22,6 +28,9 @@ namespace CapstoneProjectBE.DTOs.Assessments
         public bool IsCorrect { get; set; }
     }
 
+    /// <summary>
+    /// Carries Assessment Skill Result data between API clients and application services.
+    /// </summary>
     public class AssessmentSkillResultDto
     {
         public Guid SkillID { get; set; }

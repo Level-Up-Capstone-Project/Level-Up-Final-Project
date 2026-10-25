@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CapstoneProjectBE.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies the initial application database schema migration.
+    /// </summary>
     public partial class InitialApplicationSchema : Migration
     {
         /// <inheritdoc />

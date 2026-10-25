@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.Models;
 
+/// <summary>
+/// Represents the persisted Transcript Analysis domain entity.
+/// </summary>
 public class TranscriptAnalysis
 {
     public Guid AnalysisID { get; set; }

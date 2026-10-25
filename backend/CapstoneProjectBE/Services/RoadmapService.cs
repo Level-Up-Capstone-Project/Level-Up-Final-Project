@@ -9,6 +9,9 @@ using CapstoneProjectBE.ExternalServices.Roadmaps;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Roadmap service application behavior.
+    /// </summary>
     public class RoadmapService : IRoadmapService
     {
         //roadmaps, steps, and resource progress

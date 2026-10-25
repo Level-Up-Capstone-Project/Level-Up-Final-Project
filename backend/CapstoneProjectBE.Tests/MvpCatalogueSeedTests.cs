@@ -5,6 +5,9 @@ using Xunit;
 
 namespace CapstoneProjectBE.Tests;
 
+/// <summary>
+/// Verifies Mvp Catalogue Seed behavior.
+/// </summary>
 public class MvpCatalogueSeedTests
 {
     [Fact]

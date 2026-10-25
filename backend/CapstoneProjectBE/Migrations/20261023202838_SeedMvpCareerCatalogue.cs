@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CapstoneProjectBE.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies the MVP career catalogue seed database migration.
+    /// </summary>
     public partial class SeedMvpCareerCatalogue : Migration
     {
         /// <inheritdoc />

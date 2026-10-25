@@ -7,7 +7,6 @@ import { View, Pressable, Image, ScrollView, StyleSheet, Modal, useWindowDimensi
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import Text from '../components/Text';
-import ChevronLeft from '../components/ChevronLeft';
 import BottomNavigation from '../navigation/BottomNavigation';
 import LocalVector from '../onboarding/LocalVector';
 import useResponsiveStyles from '../layout/useResponsiveStyles';

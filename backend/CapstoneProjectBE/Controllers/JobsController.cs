@@ -6,6 +6,9 @@ using CapstoneProjectBE.DTOs.Jobs;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Jobs operations.
+    /// </summary>
     [ApiController]
     [Route("api/jobs")]
     public class JobsController : ControllerBase

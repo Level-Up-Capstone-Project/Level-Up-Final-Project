@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CapstoneProjectBE.Migrations;
 
+/// <summary>
+/// Applies or describes database schema changes for Archive Legacy Public Tables.
+/// </summary>
 [DbContext(typeof(AppDbContext))]
 [Migration("20261023010000_ArchiveLegacyPublicTables")]
 public partial class ArchiveLegacyPublicTables : Migration

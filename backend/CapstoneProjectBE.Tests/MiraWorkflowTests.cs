@@ -8,6 +8,9 @@ using Xunit;
 
 namespace CapstoneProjectBE.Tests;
 
+/// <summary>
+/// Verifies Mira Workflow behavior.
+/// </summary>
 public sealed class MiraWorkflowTests
 {
     [Fact]
@@ -45,6 +48,9 @@ public sealed class MiraWorkflowTests
         Assert.Equal("""{"message":"How do I practise?"}""", sentBody);
     }
 
+    /// <summary>
+    /// Verifies Fake Handler behavior.
+    /// </summary>
     private sealed class FakeHandler(Func<HttpRequestMessage, HttpResponseMessage> respond) : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>

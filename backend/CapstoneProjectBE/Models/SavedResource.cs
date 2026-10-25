@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Saved Resource domain entity.
+    /// </summary>
     public class SavedResource
     {
         public Guid SavedResourceID { get; set; }

@@ -1,10 +1,9 @@
 /** Manages authentication form values, validation, recovery inputs and navigation. */
 import { locationSummary, type WorkArea } from '../location/types';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, BackHandler, Keyboard, Platform, ScrollView, TextInput, useWindowDimensions } from 'react-native';
+import { BackHandler, Platform, ScrollView, TextInput, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { authAssets } from './assets';
-import { isValidContact, type AuthScreen, type Account } from './account';
+import { type AuthScreen, type Account } from './account';
 import type { LegalDocumentType } from '../legal/types';
 import { apiRequest, ApiError } from "../api/client";
 import {saveProfilePreferences} from '../api/profile';

@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CapstoneProjectBE.Controllers;
 
+/// <summary>
+/// Handles HTTP requests for Google Auth operations.
+/// </summary>
 [ApiController, AllowAnonymous, Route("api/auth/google")]
 public class GoogleAuthController(IConfiguration config, GoogleLoginService login) : ControllerBase
 {

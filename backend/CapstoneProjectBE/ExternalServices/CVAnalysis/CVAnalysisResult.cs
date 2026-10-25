@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.ExternalServices.CVAnalysis
 {
+    /// <summary>
+    /// Provides CVAnalysis Result integration behavior.
+    /// </summary>
     public class CVAnalysisResult
     {
         public decimal QualityScore { get; set; }

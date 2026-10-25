@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { Platform, BackHandler, Image, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Text from '../components/Text';
-import ChevronLeft from '../components/ChevronLeft';
 import LocalVector from '../onboarding/LocalVector';
 import { badges,categories,type Badge } from '../achievements/data';
 import type { AppModel } from '../navigation/useAppModel';

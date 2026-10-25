@@ -5,6 +5,9 @@ using CapstoneProjectBE.Services;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
+/// <summary>
+/// Verifies N8n Cv behavior.
+/// </summary>
 public class N8nCvTests
 {
     private static readonly byte[] Document = "%PDF-1.4 CV binary"u8.ToArray();
@@ -189,6 +192,9 @@ public class N8nCvTests
     private static N8nCVAnalysisProvider Provider(HttpMessageHandler handler, IConfiguration config) =>
         new(new N8nAnalysisService(new HttpClient(handler), config), Ocr, new TextCVAnalysisProvider());
 
+    /// <summary>
+    /// Verifies Handler behavior.
+    /// </summary>
     private sealed class Handler(Func<HttpRequestMessage, Task<HttpResponseMessage>> send) : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct) => send(request);

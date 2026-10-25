@@ -11,6 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CapstoneProjectBE.Migrations
 {
+    /// <summary>
+    /// Applies or describes database schema changes for Add Password Reset And Signup Preferences.
+    /// </summary>
     [DbContext(typeof(AppDbContext))]
     [Migration("20261022213350_AddPasswordResetAndSignupPreferences")]
     partial class AddPasswordResetAndSignupPreferences

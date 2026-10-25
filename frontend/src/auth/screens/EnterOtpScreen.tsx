@@ -10,7 +10,7 @@ export default function EnterOtpScreen({ model }: {
 }) {
     const styles = useAuthStyles();
     const scale = Math.min(model.width, 480) / 408.393;
-    const { otp, setOtp, setMessage, resendSeconds, setResendSeconds, inputs, verify, changeOtp } = model;
+    const { otp, resendSeconds, inputs, verify, changeOtp } = model;
     return <AuthLayout model={model}><>
             <View style={styles.otpRow}>{otp.map(
                 /** Renders a item entry from its data. */

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Profile operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/profile")]

@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Assessments operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/assessments")]

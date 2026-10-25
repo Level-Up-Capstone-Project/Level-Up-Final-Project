@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Skill Gap operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/skill-gap")]

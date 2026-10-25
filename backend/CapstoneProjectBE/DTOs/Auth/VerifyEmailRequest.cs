@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.DTOs.Auth
 {
+    /// <summary>
+    /// Carries Verify Email Request data between API clients and application services.
+    /// </summary>
     public class VerifyEmailRequest
     {
         [Required]

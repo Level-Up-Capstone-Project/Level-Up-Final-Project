@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Controllers;
 
+/// <summary>
+/// Handles HTTP requests for Career Suggestions operations.
+/// </summary>
 [Authorize]
 [ApiController]
 [Route("api/careers/suggestions")]

@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Database;
 
+/// <summary>
+/// Provides Database Migration Manager database configuration and lifecycle behavior.
+/// </summary>
 public static class DatabaseMigrationManager
 {
     private static readonly string[] RequiredTables =

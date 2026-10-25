@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.DTOs.Assessments
 {
+    /// <summary>
+    /// Carries Assessment data between API clients and application services.
+    /// </summary>
     public class AssessmentDto
     {
         public Guid SkillAssessmentID { get; set; }
@@ -10,6 +13,9 @@ namespace CapstoneProjectBE.DTOs.Assessments
         public IReadOnlyList<AssessmentQuestionDto> Questions { get; set; } = Array.Empty<AssessmentQuestionDto>();
     }
 
+    /// <summary>
+    /// Carries Assessment Question data between API clients and application services.
+    /// </summary>
     public class AssessmentQuestionDto
     {
         public Guid QuestionID { get; set; }

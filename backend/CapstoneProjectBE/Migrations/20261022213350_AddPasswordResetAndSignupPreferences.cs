@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CapstoneProjectBE.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies the password-reset and signup-preferences database migration.
+    /// </summary>
     public partial class AddPasswordResetAndSignupPreferences : Migration
     {
         /// <inheritdoc />

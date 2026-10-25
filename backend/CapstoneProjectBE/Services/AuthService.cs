@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Auth service application behavior.
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;

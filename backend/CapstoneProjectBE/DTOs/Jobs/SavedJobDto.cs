@@ -1,6 +1,9 @@
 namespace CapstoneProjectBE.DTOs.Jobs
 {
     //saved job with job card details
+    /// <summary>
+    /// Carries Saved Job data between API clients and application services.
+    /// </summary>
     public class SavedJobDto
     {
         public Guid SavedJobID { get; set; }

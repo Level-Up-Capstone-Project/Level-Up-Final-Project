@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.DTOs.Auth
 {
+    /// <summary>
+    /// Carries Login Request data between API clients and application services.
+    /// </summary>
     public class LoginRequest
     {
         [Required]

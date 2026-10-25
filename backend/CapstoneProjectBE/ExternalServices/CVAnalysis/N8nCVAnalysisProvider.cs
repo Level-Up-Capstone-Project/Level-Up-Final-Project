@@ -3,6 +3,9 @@ using CapstoneProjectBE.Services;
 
 namespace CapstoneProjectBE.ExternalServices.CVAnalysis;
 
+/// <summary>
+/// Provides N8n CVAnalysis Provider integration behavior.
+/// </summary>
 public sealed class N8nCVAnalysisProvider(
     N8nAnalysisService workflow,
     ICVTextExtractor extractor,

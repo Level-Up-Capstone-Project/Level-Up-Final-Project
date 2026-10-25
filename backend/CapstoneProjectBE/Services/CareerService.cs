@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Career service application behavior.
+    /// </summary>
     public class CareerService : ICareerService
     {
         private readonly AppDbContext _context;

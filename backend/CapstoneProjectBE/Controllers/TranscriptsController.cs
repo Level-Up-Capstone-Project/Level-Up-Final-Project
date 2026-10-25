@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CapstoneProjectBE.Controllers;
 
+/// <summary>
+/// Handles HTTP requests for Transcripts operations.
+/// </summary>
 [ApiController, Authorize, Route("api/transcripts")]
 public class TranscriptsController(AppDbContext db, ITranscriptAnalysisProvider workflow) : ControllerBase
 {

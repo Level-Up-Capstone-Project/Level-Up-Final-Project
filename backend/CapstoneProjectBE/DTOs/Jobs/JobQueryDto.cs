@@ -2,6 +2,9 @@ namespace CapstoneProjectBE.DTOs.Jobs
 {
     //query parameters for GET /api/jobs
     //optional
+    /// <summary>
+    /// Carries Job Query data between API clients and application services.
+    /// </summary>
     public class JobQueryDto
     {
         public int Page { get; set; } = 1;

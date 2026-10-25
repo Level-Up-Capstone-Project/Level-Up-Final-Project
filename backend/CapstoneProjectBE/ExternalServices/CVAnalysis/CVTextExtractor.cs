@@ -3,6 +3,9 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 
 namespace CapstoneProjectBE.ExternalServices.CVAnalysis
 {
+    /// <summary>
+    /// Provides CVText Extractor integration behavior.
+    /// </summary>
     public class CVTextExtractor(IPdfOcr pdfOcr, bool alwaysOcr = false) : ICVTextExtractor
     {
         public async Task<string> ExtractTextAsync(byte[] fileBytes, string fileType, CancellationToken cancellationToken)

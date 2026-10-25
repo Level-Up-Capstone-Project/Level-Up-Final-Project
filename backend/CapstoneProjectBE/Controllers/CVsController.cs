@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for CVs operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/cvs")]

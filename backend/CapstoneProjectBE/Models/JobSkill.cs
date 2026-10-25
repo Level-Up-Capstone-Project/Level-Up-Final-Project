@@ -1,6 +1,9 @@
 namespace CapstoneProjectBE.Models
 {
     //links job to skill it requires
+    /// <summary>
+    /// Represents the persisted Job Skill domain entity.
+    /// </summary>
     public class JobSkill
     {
         

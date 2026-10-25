@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace CapstoneProjectBE.ExternalServices.Storage
 {
+    /// <summary>
+    /// Provides CVStorage Service integration behavior.
+    /// </summary>
     public class CVStorageService : ICVStorageService
     {
         private const long MaxFileSizeBytes = 5 * 1024 * 1024;

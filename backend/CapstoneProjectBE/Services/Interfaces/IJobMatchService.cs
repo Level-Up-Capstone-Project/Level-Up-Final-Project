@@ -2,6 +2,9 @@ using CapstoneProjectBE.DTOs.Jobs;
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the Job Match service abstraction.
+    /// </summary>
     public interface IJobMatchService
     {
         //all open jobs, best match first

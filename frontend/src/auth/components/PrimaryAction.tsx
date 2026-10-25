@@ -1,6 +1,6 @@
 /** Provides the main styled action button for authentication forms. */
 import { useEffect, useRef } from 'react';
-import { Animated, Platform, Pressable, Text, View, useWindowDimensions } from 'react-native';
+import { Animated, Platform, Pressable, Text, useWindowDimensions } from 'react-native';
 import { useAuthStyles } from '../styles';
 import AuthIcon from './AuthIcon';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
