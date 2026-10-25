@@ -2,6 +2,9 @@ using System.Text;
 using CapstoneProjectBE.ExternalServices.CVAnalysis;
 using Xunit;
 
+/// <summary>
+/// Verifies CVText Extractor behavior.
+/// </summary>
 public class CVTextExtractorTests
 {
     private const string NativeText = "Software developer with experience in CSharp SQL testing and building reliable web applications.";
@@ -82,6 +85,9 @@ public class CVTextExtractorTests
         Assert.Equal("OCR dependencies missing", error.Message);
     }
 
+    /// <summary>
+    /// Verifies Fake Ocr behavior.
+    /// </summary>
     private sealed class FakeOcr : IPdfOcr
     {
         public string Text { get; init; } = "";

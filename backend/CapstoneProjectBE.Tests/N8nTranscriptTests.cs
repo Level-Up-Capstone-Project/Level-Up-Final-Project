@@ -6,6 +6,9 @@ using CapstoneProjectBE.ExternalServices.Transcripts;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
+/// <summary>
+/// Verifies N8n Transcript behavior.
+/// </summary>
 public class N8nTranscriptTests
 {
     private static readonly byte[] Document = "%PDF-1.4 Official transcript binary"u8.ToArray();
@@ -205,6 +208,9 @@ public class N8nTranscriptTests
     private static HttpContent Part(MultipartFormDataContent form, string name) =>
         form.Single(part => part.Headers.ContentDisposition?.Name?.Trim('"') == name);
 
+    /// <summary>
+    /// Verifies Handler behavior.
+    /// </summary>
     private sealed class Handler(Func<HttpRequestMessage,CancellationToken,Task<HttpResponseMessage>> send) : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct) => send(request, ct);

@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Jwt Token service application behavior.
+    /// </summary>
     public class JwtTokenService : IJwtTokenService
     {
         private readonly IConfiguration _configuration;

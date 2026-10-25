@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the User Skill service abstraction.
+    /// </summary>
     public interface IUserSkillService
     {
         Task<IReadOnlyList<UserSkillDto>> GetForUserAsync(Guid userId, CancellationToken cancellationToken);

@@ -11,6 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CapstoneProjectBE.Migrations
 {
+    /// <summary>
+    /// Applies or describes database schema changes for Initial Application Schema.
+    /// </summary>
     [DbContext(typeof(AppDbContext))]
     [Migration("20261022192556_InitialApplicationSchema")]
     partial class InitialApplicationSchema

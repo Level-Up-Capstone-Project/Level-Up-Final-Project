@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Job Match domain entity.
+    /// </summary>
     public class JobMatch
     {
         public Guid JobMatchID { get; set; }

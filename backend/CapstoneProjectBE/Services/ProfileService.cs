@@ -7,6 +7,9 @@ using System.Text.Json;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Profile service application behavior.
+    /// </summary>
     public class ProfileService : IProfileService
     {
         private readonly AppDbContext _context;

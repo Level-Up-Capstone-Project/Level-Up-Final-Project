@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.DTOs.Profile
 {
+    /// <summary>
+    /// Carries Profile data between API clients and application services.
+    /// </summary>
     public class ProfileDto
     {
         public Guid ProfileID { get; set; }

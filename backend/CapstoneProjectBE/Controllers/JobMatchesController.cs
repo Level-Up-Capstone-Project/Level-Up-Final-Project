@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Job Matches operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/job-matches")]

@@ -9,6 +9,9 @@ namespace CapstoneProjectBE.Services
 {
     // job listin (paged + filtered) + job details
     //expired jobs hidden from list but viewable by ID
+    /// <summary>
+    /// Coordinates Job service application behavior.
+    /// </summary>
     public class JobService : IJobService
     {
         private const int MaxPageSize = 50;

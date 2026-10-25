@@ -9,8 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services;
 
+/// <summary>
+/// Stores immutable Google Login Result values used by application services.
+/// </summary>
 public sealed record GoogleLoginResult(LoginResponse Login, bool IsNewUser, string Name);
 
+/// <summary>
+/// Coordinates Google Login service application behavior.
+/// </summary>
 public sealed class GoogleLoginService(AppDbContext db, IPasswordHasher<User> hasher, IJwtTokenService jwt)
 {
     public async Task<GoogleLoginResult> SignInAsync(ClaimsPrincipal principal, bool allowCreate, CancellationToken ct)

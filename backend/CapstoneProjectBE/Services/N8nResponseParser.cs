@@ -2,6 +2,9 @@ using System.Text.Json;
 
 namespace CapstoneProjectBE.Services;
 
+/// <summary>
+/// Coordinates N8n Response Parser application behavior.
+/// </summary>
 public static class N8nResponseParser
 {
     public static JsonElement Unwrap(JsonElement root)

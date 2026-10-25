@@ -7,7 +7,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import Text from '../components/Text';
 import OpportunityIcon from '../opportunities/OpportunityIcon';
-import ChevronLeft from '../components/ChevronLeft';
 import CircularProgress from './CircularProgress';
 import StatusNode from './StatusNode';
 import FileTypeIcon from './FileTypeIcon';

@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.DTOs.SkillGap
 {
+    /// <summary>
+    /// Carries Skill Gap Item data between API clients and application services.
+    /// </summary>
     public class SkillGapItemDto
     {
         public Guid SkillID { get; set; }

@@ -1,6 +1,9 @@
 namespace CapstoneProjectBE.Models
 {
     //a job listing
+    /// <summary>
+    /// Represents the persisted Job domain entity.
+    /// </summary>
     public class Job
     {
         public Guid JobID { get; set; }

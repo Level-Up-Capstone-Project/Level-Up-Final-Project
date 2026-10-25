@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Dashboard service application behavior.
+    /// </summary>
     public class DashboardService : IDashboardService
     {
         private readonly AppDbContext _context;

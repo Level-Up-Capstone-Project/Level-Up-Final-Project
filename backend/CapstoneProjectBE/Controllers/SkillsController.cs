@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Skills operations.
+    /// </summary>
     [ApiController]
     [Route("api/skills")]
     public class SkillsController : ControllerBase

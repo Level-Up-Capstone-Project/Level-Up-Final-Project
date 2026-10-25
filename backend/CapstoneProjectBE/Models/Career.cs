@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Career domain entity.
+    /// </summary>
     public class Career
     {
         public Guid CareerID { get; set; }

@@ -12,7 +12,7 @@ export default function SignInScreen({ model }: {
 }) {
     const styles = useAuthStyles();
     const scale = Math.min(model.width, 480) / 408.393;
-    const { navigate, onAuthenticated, compact, contact, setContact, password, setPassword, setRecoveryContact, signIn } = model;
+    const { navigate, compact, contact, setContact, password, setPassword, setRecoveryContact, signIn } = model;
     return <AuthLayout model={model}><>
             <View style={[styles.socialRow, { marginTop: 17 * scale }, compact && { gap: 12 }]}>{(['google'] as const).map(
                 /** Renders a item entry from its data. */

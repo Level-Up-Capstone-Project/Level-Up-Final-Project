@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
+/// <summary>
+/// Verifies Google Login behavior.
+/// </summary>
 public class GoogleLoginTests
 {
     private static AppDbContext Database() => new(new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
@@ -68,5 +71,8 @@ public class GoogleLoginTests
         Assert.Empty(db.ExternalLogins);
     }
 
+    /// <summary>
+    /// Verifies Jwt behavior.
+    /// </summary>
     private sealed class Jwt : IJwtTokenService { public string GenerateToken(User user) => "application-token"; }
 }

@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the Career service abstraction.
+    /// </summary>
     public interface ICareerService
     {
         Task<IReadOnlyList<CareerDto>> GetAllAsync(CancellationToken cancellationToken);

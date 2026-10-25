@@ -7,6 +7,9 @@ using System.Security.Claims;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Saved Jobs operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/saved-jobs")]

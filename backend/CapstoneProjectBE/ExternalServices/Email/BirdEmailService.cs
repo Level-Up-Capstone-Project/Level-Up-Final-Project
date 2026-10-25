@@ -4,6 +4,9 @@ using System.Net.Http.Json;
 
 namespace CapstoneProjectBE.ExternalServices.Email
 {
+    /// <summary>
+    /// Provides Bird Email Service integration behavior.
+    /// </summary>
     public sealed class BirdEmailService : IEmailService
     {
         private readonly HttpClient _httpClient;

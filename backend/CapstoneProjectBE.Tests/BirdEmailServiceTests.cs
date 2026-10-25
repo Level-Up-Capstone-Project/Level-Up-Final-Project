@@ -7,6 +7,9 @@ using Xunit;
 
 namespace CapstoneProjectBE.Tests;
 
+/// <summary>
+/// Verifies Bird Email Service behavior.
+/// </summary>
 public class BirdEmailServiceTests
 {
     [Fact]
@@ -36,6 +39,9 @@ public class BirdEmailServiceTests
         Assert.Contains("123456", payload.RootElement.GetProperty("text").GetString());
     }
 
+    /// <summary>
+    /// Verifies Recording Handler behavior.
+    /// </summary>
     private sealed class RecordingHandler : HttpMessageHandler
     {
         public HttpRequestMessage? Request { get; private set; }

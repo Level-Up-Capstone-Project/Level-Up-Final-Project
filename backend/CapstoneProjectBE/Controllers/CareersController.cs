@@ -4,6 +4,9 @@ using CapstoneProjectBE.DTOs.Careers;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Careers operations.
+    /// </summary>
     [ApiController]
     [Route("api/careers")]
     public class CareersController : ControllerBase

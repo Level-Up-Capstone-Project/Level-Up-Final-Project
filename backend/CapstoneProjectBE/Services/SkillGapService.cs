@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Skill Gap service application behavior.
+    /// </summary>
     public class SkillGapService : ISkillGapService
     {
         private readonly AppDbContext _context;

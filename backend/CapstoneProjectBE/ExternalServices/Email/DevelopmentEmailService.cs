@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.ExternalServices.Email
 {
+    /// <summary>
+    /// Provides Development Email Service integration behavior.
+    /// </summary>
     public class DevelopmentEmailService : IEmailService
     {
         private readonly ILogger<DevelopmentEmailService> _logger;

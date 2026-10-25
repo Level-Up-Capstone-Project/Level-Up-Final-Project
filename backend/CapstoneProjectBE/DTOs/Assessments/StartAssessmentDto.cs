@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CapstoneProjectBE.DTOs.Assessments
 {
+    /// <summary>
+    /// Carries Start Assessment data between API clients and application services.
+    /// </summary>
     public class StartAssessmentDto
     {
         [Required]

@@ -11,6 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CapstoneProjectBE.Migrations
 {
+    /// <summary>
+    /// Applies or describes database schema changes for Seed Mvp Career Catalogue.
+    /// </summary>
     [DbContext(typeof(AppDbContext))]
     [Migration("20261023202838_SeedMvpCareerCatalogue")]
     partial class SeedMvpCareerCatalogue

@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.DTOs.SavedResources
 {
+    /// <summary>
+    /// Carries Saved Resource data between API clients and application services.
+    /// </summary>
     public class SavedResourceDto
     {
         public Guid SavedResourceID { get; set; }

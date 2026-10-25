@@ -12,6 +12,9 @@ using Xunit;
 
 namespace CapstoneProjectBE.Tests;
 
+/// <summary>
+/// Verifies Auth Recovery And Preferences behavior.
+/// </summary>
 public sealed class AuthRecoveryAndPreferencesTests
 {
     [Fact]
@@ -90,6 +93,9 @@ public sealed class AuthRecoveryAndPreferencesTests
             new VerificationCodeService(new PasswordHasher<EmailVerification>()), email, new StubJwtService(),
             NullLogger<AuthService>.Instance);
 
+    /// <summary>
+    /// Verifies Capturing Email Service behavior.
+    /// </summary>
     private sealed class CapturingEmailService : IEmailService
     {
         public string ResetCode { get; private set; } = string.Empty;
@@ -111,6 +117,9 @@ public sealed class AuthRecoveryAndPreferencesTests
         }
     }
 
+    /// <summary>
+    /// Verifies Stub Jwt Service behavior.
+    /// </summary>
     private sealed class StubJwtService : IJwtTokenService
     {
         public string GenerateToken(User user) => "test-token";

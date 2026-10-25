@@ -1,9 +1,8 @@
 /** Arranges authentication headings, descriptions, forms and recovery steps. */
 import ScreenHeader, {screenHeaderTop} from '../../components/ScreenHeader';
 import React from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AuthIcon from './AuthIcon';
 import AuthBackground from './AuthBackground';
 
 import { useAuthStyles } from '../styles';
@@ -16,7 +15,7 @@ export default function AuthLayout({ model, children }: {
 }) {
     const styles = useAuthStyles();
     const scale = Math.min(model.width, 480) / 408.393;
-    const { screen, loadedAssets, assetError, signup, signin, recovery, name, submitting, message, scroll, back, title, minHeight } = model;
+    const { screen, loadedAssets, assetError, signup, signin, recovery, submitting, message, scroll, back, title, minHeight } = model;
     const darkDesign = true;
     if (!loadedAssets && !assetError)
         return <View style={styles.safe}/>;

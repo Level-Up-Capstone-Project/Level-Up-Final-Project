@@ -7,6 +7,9 @@ using System.Threading;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Career Readiness service application behavior.
+    /// </summary>
     public class CareerReadinessService : ICareerReadinessService
     {
         private readonly AppDbContext _context;

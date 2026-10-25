@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CapstoneProjectBE.Controllers
 {
+    /// <summary>
+    /// Handles HTTP requests for Dashboard operations.
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/dashboard")]

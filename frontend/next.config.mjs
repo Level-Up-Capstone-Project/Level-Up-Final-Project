@@ -3,6 +3,7 @@ import path from 'node:path';
 const root=process.cwd();
 const config={
  output:'standalone',reactStrictMode:true,devIndicators:false,
+ outputFileTracingRoot:root,
  transpilePackages:['react-native-web','react-native-svg','react-native-safe-area-context'],
  typescript:{tsconfigPath:'tsconfig.json'},
  /** Sends www visitors to the canonical host, which is the only origin the API allows. */

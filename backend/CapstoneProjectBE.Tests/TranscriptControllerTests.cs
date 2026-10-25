@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
+/// <summary>
+/// Verifies Transcript Controller behavior.
+/// </summary>
 public class TranscriptControllerTests
 {
     [Fact]
@@ -104,6 +107,9 @@ public class TranscriptControllerTests
         Assert.Empty(db.TranscriptAnalyses);
     }
 
+    /// <summary>
+    /// Verifies Failed Workflow behavior.
+    /// </summary>
     private sealed class FailedWorkflow : ITranscriptAnalysisProvider
     {
         public Task<TranscriptInsights> AnalyseAsync(string? careerName, string fileName, string contentType, byte[] document,
@@ -111,6 +117,9 @@ public class TranscriptControllerTests
             throw new N8nAnalysisException("Workflow unavailable");
     }
 
+    /// <summary>
+    /// Verifies Workflow behavior.
+    /// </summary>
     private sealed class Workflow : ITranscriptAnalysisProvider
     {
         public Task<TranscriptInsights> AnalyseAsync(string? careerName, string fileName, string contentType, byte[] document,

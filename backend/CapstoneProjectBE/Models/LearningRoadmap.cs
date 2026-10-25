@@ -2,6 +2,9 @@
 //user's plan for one career
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Learning Roadmap domain entity.
+    /// </summary>
     public class LearningRoadmap
     {
         public Guid RoadmapID { get; set; }

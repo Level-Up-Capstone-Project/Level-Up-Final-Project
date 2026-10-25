@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Services
 {
+    /// <summary>
+    /// Coordinates Job Match service application behavior.
+    /// </summary>
     public class JobMatchService : IJobMatchService
     {
         private readonly AppDbContext _context;
@@ -375,6 +378,9 @@ namespace CapstoneProjectBE.Services
                 100);
         }
 
+        /// <summary>
+        /// Coordinates Job For Matching application behavior.
+        /// </summary>
         private sealed class JobForMatching
         {
             public Guid JobID { get; set; }
@@ -390,6 +396,9 @@ namespace CapstoneProjectBE.Services
             public List<JobSkillDto> Skills { get; set; } = [];
         }
 
+        /// <summary>
+        /// Coordinates User Match Inputs application behavior.
+        /// </summary>
         private sealed class UserMatchInputs
         {
             public Dictionary<Guid, decimal> SkillWeights { get; set; } = [];
@@ -399,6 +408,9 @@ namespace CapstoneProjectBE.Services
             public HashSet<Guid> TargetCareerSkillIDs { get; set; } = [];
         }
 
+        /// <summary>
+        /// Coordinates Calculated Job Match application behavior.
+        /// </summary>
         private sealed class CalculatedJobMatch
         {
             public Guid JobID { get; set; }

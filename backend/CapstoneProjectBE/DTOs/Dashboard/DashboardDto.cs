@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.DTOs.Dashboard
 {
+    /// <summary>
+    /// Carries Dashboard data between API clients and application services.
+    /// </summary>
     public class DashboardDto
     {
         public DashboardProfileDto? Profile { get; set; }
@@ -13,6 +16,9 @@ namespace CapstoneProjectBE.DTOs.Dashboard
         public int SavedResourcesCount { get; set; }
     }
 
+    /// <summary>
+    /// Carries Dashboard Profile data between API clients and application services.
+    /// </summary>
     public class DashboardProfileDto
     {
         public string FName { get; set; } = string.Empty;
@@ -20,12 +26,18 @@ namespace CapstoneProjectBE.DTOs.Dashboard
         public bool ProfileCompleted { get; set; }
     }
 
+    /// <summary>
+    /// Carries Dashboard Career data between API clients and application services.
+    /// </summary>
     public class DashboardCareerDto
     {
         public Guid CareerID { get; set; }
         public string CareerName { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// Carries Dashboard CV data between API clients and application services.
+    /// </summary>
     public class DashboardCVDto
     {
         public Guid CVID { get; set; }

@@ -6,7 +6,6 @@ import { BackHandler, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import Text from '../components/Text';
-import ChevronLeft from '../components/ChevronLeft';
 import ChevronRight from '../components/ChevronRight';
 import UploadVector from '../upload/UploadVector';
 import type { AppModel } from '../navigation/useAppModel';

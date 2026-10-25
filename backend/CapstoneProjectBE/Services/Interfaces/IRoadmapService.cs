@@ -2,6 +2,9 @@ using CapstoneProjectBE.DTOs.Roadmaps;
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the Roadmap service abstraction.
+    /// </summary>
     public interface IRoadmapService
     {
 

@@ -8,6 +8,9 @@ using Xunit;
 
 namespace CapstoneProjectBE.Tests;
 
+/// <summary>
+/// Verifies Assessment Service behavior.
+/// </summary>
 public sealed class AssessmentServiceTests
 {
     [Fact]
@@ -175,6 +178,9 @@ public sealed class AssessmentServiceTests
         return new(userId, skillId, assessmentId, firstQuestionId, secondQuestionId);
     }
 
+    /// <summary>
+    /// Carries Assessment Seed values used by test fixtures.
+    /// </summary>
     private sealed record AssessmentSeed(
         Guid UserId,
         Guid SkillId,

@@ -11,6 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CapstoneProjectBE.Migrations
 {
+    /// <summary>
+    /// Applies or describes database schema changes for Enforce Saved Resource Integrity.
+    /// </summary>
     [DbContext(typeof(AppDbContext))]
     [Migration("20261022201653_EnforceSavedResourceIntegrity")]
     partial class EnforceSavedResourceIntegrity

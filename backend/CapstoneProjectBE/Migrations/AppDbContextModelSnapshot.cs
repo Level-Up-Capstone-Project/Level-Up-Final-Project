@@ -10,6 +10,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CapstoneProjectBE.Migrations
 {
+    /// <summary>
+    /// Applies or describes database schema changes for App Db Context Model Snapshot.
+    /// </summary>
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
     {

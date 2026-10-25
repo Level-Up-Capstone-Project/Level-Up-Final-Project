@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Email Verification domain entity.
+    /// </summary>
     public class EmailVerification
     {
         public Guid EmailVerificationID { get; set; }

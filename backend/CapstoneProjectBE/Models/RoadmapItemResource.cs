@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Roadmap Item Resource domain entity.
+    /// </summary>
     public class RoadmapItemResource
     {
         public Guid RoadmapItemResourceID { get; set; }

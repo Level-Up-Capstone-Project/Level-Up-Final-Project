@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CapstoneProjectBE.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies the saved-resource integrity database migration.
+    /// </summary>
     public partial class EnforceSavedResourceIntegrity : Migration
     {
         /// <inheritdoc />

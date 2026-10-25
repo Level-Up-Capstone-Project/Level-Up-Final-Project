@@ -2,7 +2,6 @@ import type {BundledAsset} from '../../platform/assets';
 /** Displays the contour background and vignette used by authentication screens. */
 import VignettePair from '../../components/VignettePair';
 import { View } from 'react-native';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import LocalVector from '../../onboarding/LocalVector';
 
 // Shared background from Figma 34:394, 34:345, 34:368 and 78:907.

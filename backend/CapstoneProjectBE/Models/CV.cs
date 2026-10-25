@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted CV domain entity.
+    /// </summary>
     public class CV
     {
         public Guid CVID { get; set; }

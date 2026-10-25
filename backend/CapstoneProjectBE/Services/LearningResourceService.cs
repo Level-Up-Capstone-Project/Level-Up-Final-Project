@@ -8,6 +8,9 @@ namespace CapstoneProjectBE.Services
     //read operations for learning resources (external)
     //inactive resources are soft-deleted
 
+    /// <summary>
+    /// Coordinates Learning Resource service application behavior.
+    /// </summary>
     public class LearningResourceService : ILearningResourceService
     {
         private readonly AppDbContext _context;

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
+/// <summary>
+/// Verifies Cv Workflow Pipeline behavior.
+/// </summary>
 public class CvWorkflowPipelineTests
 {
     [Fact]
@@ -57,6 +60,9 @@ public class CvWorkflowPipelineTests
     }
 
     private static AppDbContext Database()=>new(new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+    /// <summary>
+    /// Verifies Provider behavior.
+    /// </summary>
     private sealed class Provider : ICVAnalysisProvider
     {
         public bool Fail {get;init;}
@@ -68,6 +74,9 @@ public class CvWorkflowPipelineTests
             return Task.FromResult(new CVAnalysisResult {QualityScore=78,ATSScore=80,FormattingScore=72,Strengths="SQL experience",Weaknesses="Add outcomes",Recommendations="Quantify results",DetectedSkills=request.KnownSkills});
         }
     }
+    /// <summary>
+    /// Verifies Storage behavior.
+    /// </summary>
     private sealed class Storage : ICVStorageService
     {
         public static readonly byte[] Bytes = "%PDF-1.4 workflow document"u8.ToArray();

@@ -14,7 +14,7 @@ import {cvAnalysisSource, type CVAnalysis} from '../api/cvs';
 import {transcriptAnalysisSource, type TranscriptAnalysis} from '../api/transcripts';
 import {loadProfile} from '../api/profile';
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { Alert, Platform, ScrollView, useWindowDimensions } from 'react-native';
+import { Alert, Platform, useWindowDimensions } from 'react-native';
 import * as DocumentPicker from '../platform/documentPicker';
 import { defaultAccount, type Account } from '../auth/account';
 import { type Screen } from './types';
@@ -150,7 +150,7 @@ export default function useAppModel() {
     const { careerAssessment, dashboardLoaded: careerAssessmentLoaded, setCareerAssessment } = useCareerAssessment(account.email, account.token, `${rawCvAssessment?.analysedAt ?? ''}:${transcriptAssessment?.analysedAt ?? ''}:${screen === 'home'}`, roles[role] ?? '', role);
     const documentAnalysisEntry = documentEntry(cvAnalysis.status, transcriptAnalysis.status);
     const [job, setJob] = useState('');
-    const { savedTopics, toggleSavedTopic, topic, setTopic, currentTopic, checked, setChecked, completed, setCompleted, taskProgress,
+    const { savedTopics, toggleSavedTopic, topic, setTopic, currentTopic, checked, setChecked, completed, completeTopic, taskProgress,
         learningGroups, resourcesForTopic, roadmapCareerName, careerSuggestions, generatingCareerID, generateRoadmap,
         learningLoading, learningError, reloadLearning } = useLearningProgress(account.email, account.token, account.targetCareerID);
     const earnedBadgeIds = useCampaignMedals(account.email, account.token, screen === 'achievements', {
@@ -158,10 +158,9 @@ export default function useAppModel() {
         cvAnalysed: cvAnalysis.status === 'completed',
         opportunitiesExplored: screen === 'job' && !!opportunityModel.selected,
     });
-    const scroll = useRef<ScrollView>(null);
     /** Changes the screen and resets its scroll position and error message. */
     const resolveScreen=useCallback((next:Screen):Screen=>next === 'analysis' ? documentEntry(cvAnalysis.status, transcriptAnalysis.status) : next === 'uploadTranscript' && cvAnalysis.status !== 'completed' ? 'upload' : next,[cvAnalysis.status,transcriptAnalysis.status]);
-    const updateScreen=useCallback((next:Screen)=>{currentScreen.current=next;setScreen(next);setError('');scroll.current?.scrollTo({y:0,animated:false});},[]);
+    const updateScreen=useCallback((next:Screen)=>{currentScreen.current=next;setScreen(next);setError('');},[]);
     const go = useCallback((next:Screen)=>{
         const target=resolveScreen(next),current=currentScreen.current;
         navigationHistory.push(current,target);
@@ -243,14 +242,6 @@ export default function useAppModel() {
         }
     };
     const auth = ['signin', 'signup', 'forgot', 'otp', 'reset'].includes(screen);
-    const active = ['home', 'analysis', 'jobs', 'learning'].includes(screen) ? screen : screen === 'job' ? 'jobs' : ['topic', 'complete'].includes(screen) ? 'learning' : null;
-    const titles: Partial<Record<Screen, string>> = { home: 'Home', analysis: 'CV & Skills', skills: 'CV & Skills', jobs: 'Jobs', job, learning: 'Learning Path', topic: 'Mission Intel', settings: 'Settings' };
-    const subtitle = screen === 'home' ? 'Welcome Back' : screen === 'skills' ? 'Analyzed against your selected role' : screen === 'job' ? (opportunityModel.selected?.title === job ? `${opportunityModel.selected.company} · ${opportunityModel.selected.area}, ${opportunityModel.selected.region}` : 'Opportunity details unavailable') : screen === 'learning' ? 'Your learning recommendations' : screen === 'topic' ? topic : '';
-    const back = screen === 'job' ? 'jobs' : screen === 'topic' ? 'learning' : screen === 'settings' ? 'home' : undefined;
-    const pagePadding = width >= 760 ? 70 : Math.max(20, Math.min(width * 0.077, 40));
-    const topicGroup = learningGroups.find(
-        /** Checks the group against the current selection or criteria. */
-         group => group.topics.includes(topic))?.title || 'Learning path';
-    return { documentAnalysisEntry, transcriptAssessment: transcriptAssessment?.owner === account.email.toLowerCase() && (!transcriptDocument || transcriptAssessment.documentUri === transcriptDocument.uri) ? transcriptAssessment : null, feedback,showFeedback,continueFeedback,signOut,consent,withdrawConsent,roles,cvAssessment, setCvAssessment, savedTopics, toggleSavedTopic, earnedBadgeIds, opportunityNotifications, careerAssessment, careerAssessmentLoaded, setCareerAssessment, taskProgress, learningGroups, resourcesForTopic, currentTopic, roadmapCareerName, careerSuggestions, generatingCareerID, generateRoadmap, learningLoading, learningError, reloadLearning, opportunityModel, cvRunner, transcriptRunner, cvAnalysis, updateCvAnalysis, transcriptAnalysis, updateTranscriptAnalysis, mira, legalDocument, openLegal, closeLegal, width, screen, setScreen, account, setAccount, error, setError, file, setFile, cvDocument, setCvDocument, transcriptDocument, setTranscriptDocument, query, setQuery, remote, setRemote, role, setRole, job, setJob, topic, setTopic, checked, setChecked, completed, setCompleted, scroll, go, replace, goBack, resetTo, info, pick, auth, active, titles, subtitle, back, pagePadding, topicGroup };
+    return { documentAnalysisEntry, transcriptAssessment: transcriptAssessment?.owner === account.email.toLowerCase() && (!transcriptDocument || transcriptAssessment.documentUri === transcriptDocument.uri) ? transcriptAssessment : null, feedback,showFeedback,continueFeedback,signOut,consent,withdrawConsent,roles,cvAssessment, setCvAssessment, savedTopics, toggleSavedTopic, earnedBadgeIds, opportunityNotifications, careerAssessment, careerAssessmentLoaded, setCareerAssessment, taskProgress, learningGroups, resourcesForTopic, currentTopic, roadmapCareerName, careerSuggestions, generatingCareerID, generateRoadmap, learningLoading, learningError, reloadLearning, opportunityModel, cvRunner, transcriptRunner, cvAnalysis, updateCvAnalysis, transcriptAnalysis, updateTranscriptAnalysis, mira, legalDocument, openLegal, closeLegal, width, screen, setScreen, account, setAccount, error, setError, file, setFile, cvDocument, setCvDocument, transcriptDocument, setTranscriptDocument, query, setQuery, remote, setRemote, role, setRole, job, setJob, topic, setTopic, checked, setChecked, completed, completeTopic, go, replace, goBack, resetTo, info, pick, auth };
 }
 export type AppModel = ReturnType<typeof useAppModel>;

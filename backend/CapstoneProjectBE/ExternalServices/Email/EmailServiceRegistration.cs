@@ -2,6 +2,9 @@ using System.Net.Mail;
 
 namespace CapstoneProjectBE.ExternalServices.Email
 {
+    /// <summary>
+    /// Provides Email Service Registration integration behavior.
+    /// </summary>
     public static class EmailServiceRegistration
     {
         public static IServiceCollection AddLevelUpEmail(

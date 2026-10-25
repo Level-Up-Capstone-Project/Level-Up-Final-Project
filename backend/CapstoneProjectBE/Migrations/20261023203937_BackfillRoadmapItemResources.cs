@@ -4,7 +4,9 @@
 
 namespace CapstoneProjectBE.Migrations
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies the roadmap-item resource backfill database migration.
+    /// </summary>
     public partial class BackfillRoadmapItemResources : Migration
     {
         /// <inheritdoc />

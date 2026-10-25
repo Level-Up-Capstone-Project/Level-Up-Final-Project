@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Text from '../components/Text';
-import ChevronLeft from '../components/ChevronLeft';
 import LocalVector from '../onboarding/LocalVector';
 import { legalDocuments } from './documents';
 import type { LegalDocumentType } from './types';

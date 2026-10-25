@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Skill Assessment domain entity.
+    /// </summary>
     public class SkillAssessment
     {
         public Guid SkillAssessmentID { get; set; }

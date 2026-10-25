@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.DTOs.Careers
 {
+    /// <summary>
+    /// Carries Career Skill data between API clients and application services.
+    /// </summary>
     public class CareerSkillDto
     {
         public Guid SkillID { get; set; }

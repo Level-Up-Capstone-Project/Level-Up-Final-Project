@@ -1,5 +1,8 @@
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Password Reset domain entity.
+    /// </summary>
     public class PasswordReset
     {
         public Guid PasswordResetID { get; set; }

@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted User Profile domain entity.
+    /// </summary>
     public class UserProfile
     {
         public Guid ProfileID { get; set; }

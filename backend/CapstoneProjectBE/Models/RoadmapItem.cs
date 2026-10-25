@@ -2,6 +2,9 @@
 //the steps in the user's plan
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Roadmap Item domain entity.
+    /// </summary>
     public class RoadmapItem
     {
         public Guid RoadmapItemID { get; set; }

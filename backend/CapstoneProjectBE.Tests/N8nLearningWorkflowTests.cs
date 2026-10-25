@@ -7,6 +7,9 @@ using CapstoneProjectBE.Services;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
+/// <summary>
+/// Verifies N8n Learning Workflow behavior.
+/// </summary>
 public class N8nLearningWorkflowTests
 {
     private static IConfiguration Configuration(string workflow, string url) => new ConfigurationBuilder()
@@ -69,6 +72,32 @@ public class N8nLearningWorkflowTests
             Assert.Throws<N8nAnalysisException>(() =>
                 N8nAssessmentQuestionGenerator.Validate(json.RootElement, requestId, skillId, 1));
         }
+    }
+
+    [Fact]
+    public void KnowledgeCheckAcceptsN8nCodeNodeEnvelopeAndCaseInsensitiveFields()
+    {
+        var requestId = Guid.NewGuid();
+        var skillId = Guid.NewGuid();
+        using var json = JsonDocument.Parse(JsonSerializer.Serialize(new[]
+        {
+            new
+            {
+                statusCode = 200,
+                response = new
+                {
+                    SUCCESS = true,
+                    REQUESTID = requestId,
+                    SKILLID = skillId,
+                    ATTEMPTNUMBER = 1,
+                    ASSESSMENT = new {QUESTIONS = Questions()}
+                }
+            }
+        }));
+
+        var questions = N8nAssessmentQuestionGenerator.Validate(json.RootElement, requestId, skillId, 1);
+
+        Assert.Equal(3, questions.Count);
     }
 
     [Fact]
@@ -256,6 +285,9 @@ public class N8nLearningWorkflowTests
         Content = new StringContent(JsonSerializer.Serialize(value), Encoding.UTF8, "application/json")
     };
 
+    /// <summary>
+    /// Verifies Handler behavior.
+    /// </summary>
     private sealed class Handler(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> send) : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>

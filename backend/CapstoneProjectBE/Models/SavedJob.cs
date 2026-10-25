@@ -1,6 +1,9 @@
 namespace CapstoneProjectBE.Models
 {
     //job a user bookmarked
+    /// <summary>
+    /// Represents the persisted Saved Job domain entity.
+    /// </summary>
     public class SavedJob
     {
         public Guid SavedJobID { get; set; }

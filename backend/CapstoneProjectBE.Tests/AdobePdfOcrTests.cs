@@ -4,6 +4,9 @@ using CapstoneProjectBE.ExternalServices.CVAnalysis;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
+/// <summary>
+/// Verifies Adobe Pdf Ocr behavior.
+/// </summary>
 public class AdobePdfOcrTests
 {
     private static IConfiguration Config(bool credentials = true) => new ConfigurationBuilder().AddInMemoryCollection(
@@ -66,12 +69,18 @@ public class AdobePdfOcrTests
     }
 
     private static HttpResponseMessage Json(object value) => new(HttpStatusCode.OK) { Content = JsonContent.Create(value) };
+    /// <summary>
+    /// Verifies Handler behavior.
+    /// </summary>
     private sealed class Handler(Func<HttpRequestMessage, HttpResponseMessage> send) : HttpMessageHandler
     {
         public int Calls { get; private set; }
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         { Calls++; return Task.FromResult(send(request)); }
     }
+    /// <summary>
+    /// Verifies Factory behavior.
+    /// </summary>
     private sealed class Factory(HttpMessageHandler handler) : IHttpClientFactory
     { public HttpClient CreateClient(string name) => new(handler, disposeHandler: false); }
 }

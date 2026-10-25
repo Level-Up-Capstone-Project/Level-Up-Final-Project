@@ -5,7 +5,7 @@ import ScreenHeader, {screenHeaderTop} from '../components/ScreenHeader';
 import { useEffect, useState } from 'react';
 import { Platform, BackHandler, Image, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+import Svg, { Circle } from 'react-native-svg';
 import DocumentResults from '../analysis/DocumentResults';
 import CvFeedbackReport from '../analysis/CvFeedbackReport';
 import TargetIcon from '../components/TargetIcon';
@@ -26,6 +26,7 @@ export default function CvAnalysisReportScreen({model}:{model:AppModel}) {
         /** Transforms each finding into the required display or state value. */
          (description,index)=>({title:`Improvement ${index+1}`,description,priority:undefined}))??[];
     const [detail,setDetail]=useState<{title:string;description:string}|null>(null);
+    const [completing,setCompleting]=useState(false);
     const linkedTopic=result?.learningTopic;
     const canComplete=!!linkedTopic&&model.learningGroups.some(
         /** Checks the group against the current selection or criteria. */
@@ -68,11 +69,9 @@ export default function CvAnalysisReportScreen({model}:{model:AppModel}) {
                  (item,index)=><View key={index} style={s.reportItem}><TargetIcon testID={'report-target-'+index} size={45*scale}/><View style={s.copy}><Text style={s.itemTitle}>{item.title}</Text><Text style={s.itemDescription}>{item.description}</Text></View>{item.priority&&<View style={[s.priority,{backgroundColor:item.priority==='high'?'#3e2724':item.priority==='medium'?'#3c2e1c':'#163a31'}]}><Text style={[s.priorityText,{color:item.priority==='high'?'#f6a28d':item.priority==='medium'?'#c6a572':'#6de0b3'}]}>{item.priority.toUpperCase()}</Text></View>}</View>)}
             <CvFeedbackReport feedback={result?.feedback??(result?.findings.length?{sections:[{heading:'Analysis Findings',bullets:result.findings}]}:undefined)}/>
             <View style={{flex:1,minHeight:0}}/>
-            <Pressable accessibilityRole="button" accessibilityLabel={canComplete?'Mark Topic Complete':'Back to CV Analysis'} onPress={
+            <Pressable accessibilityRole="button" accessibilityLabel={canComplete?'Mark Topic Complete':'Back to CV Analysis'} disabled={completing} onPress={
                 /** Opens the complete screen. */
-                 ()=>{if(canComplete&&linkedTopic){model.setTopic(linkedTopic);model.setCompleted(
-                /** Builds the next completed value from its previous state. */
-                 old=>Array.from(new Set([...old,linkedTopic])));model.go('complete');}else model.go('analysis');}} style={s.continue}><Text style={s.continueText}>{canComplete?'Mark Topic Complete':'Back to CV Analysis'}</Text><OpportunityIcon name="arrow" size={24*scale} color="#000"/></Pressable>
+                 async()=>{if(canComplete&&linkedTopic){setCompleting(true);model.setTopic(linkedTopic);const saved=await model.completeTopic(linkedTopic);setCompleting(false);if(saved)model.go('complete');}else model.go('analysis');}} style={[s.continue,completing&&{opacity:.55}]}><Text style={s.continueText}>{completing?'Saving Progress…':canComplete?'Mark Topic Complete':'Back to CV Analysis'}</Text><OpportunityIcon name="arrow" size={24*scale} color="#000"/></Pressable>
         </ScrollView>
         <Modal visible={detail!==null} transparent animationType="fade" onRequestClose={
             /** Closes the selected dialog or detail view. */

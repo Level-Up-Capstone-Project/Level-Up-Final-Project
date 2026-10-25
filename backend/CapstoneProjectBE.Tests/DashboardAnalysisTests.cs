@@ -4,6 +4,9 @@ using CapstoneProjectBE.Services;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
+/// <summary>
+/// Verifies Dashboard Analysis behavior.
+/// </summary>
 public class DashboardAnalysisTests
 {
     [Fact]

@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CapstoneProjectBE.DTOs.Auth
 {
+    /// <summary>
+    /// Carries Register Request data between API clients and application services.
+    /// </summary>
     public class RegisterRequest
     {
         [Required]

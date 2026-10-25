@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.Services.Interfaces
 {
+    /// <summary>
+    /// Defines the operations provided by the Verification Code service abstraction.
+    /// </summary>
     public interface IVerificationCodeService
     {
         string GenerateCode();

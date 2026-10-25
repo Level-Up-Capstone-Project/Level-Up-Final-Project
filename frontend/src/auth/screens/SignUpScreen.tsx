@@ -14,7 +14,7 @@ export default function SignUpScreen({ model }: {
 }) {
     const styles = useAuthStyles();
     const scale = Math.min(model.width, 480) / 408.393;
-    const { navigate, onAuthenticated, compact, signup, workAreas, setWorkAreas, phone, setPhone, name, setName, contact, setContact, password, setPassword, agreed, setAgreed, signUp, policy } = model;
+    const { navigate, compact, workAreas, setWorkAreas, phone, setPhone, name, setName, contact, setContact, password, setPassword, agreed, setAgreed, signUp, policy } = model;
     return <AuthLayout model={model}><>
             <View style={[styles.socialRow, { marginTop: 17 * scale }, compact && { gap: 12 }]}>{(['google'] as const).map(
                 /** Renders a item entry from its data. */

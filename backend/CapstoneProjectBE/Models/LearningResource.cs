@@ -2,6 +2,9 @@
 
 namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted Learning Resource domain entity.
+    /// </summary>
     public class LearningResource
     {
         public Guid ResourceID { get; set; }

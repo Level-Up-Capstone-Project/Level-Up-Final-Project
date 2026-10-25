@@ -1,5 +1,8 @@
 ﻿namespace CapstoneProjectBE.Models
 {
+    /// <summary>
+    /// Represents the persisted CVAnalysis domain entity.
+    /// </summary>
     public class CVAnalysis
     {
         public Guid AnalysisID { get; set; }
