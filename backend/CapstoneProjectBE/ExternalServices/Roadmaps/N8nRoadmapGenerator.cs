@@ -4,9 +4,29 @@ using CapstoneProjectBE.Services;
 namespace CapstoneProjectBE.ExternalServices.Roadmaps;
 
 /// <summary>
-/// Carries Generated Roadmap Item values used by an external integration.
+/// Carries a validated learning-resource candidate returned for a weak roadmap skill.
 /// </summary>
-public sealed record GeneratedRoadmapItem(Guid SkillID, string Title, string Description, string Priority);
+public sealed record GeneratedLearningResource(
+    string ResourceName,
+    string ResourceType,
+    string CanonicalUrl,
+    string Provider,
+    string ProviderKey,
+    string? ProviderResourceID,
+    string DifficultyLevel,
+    string CostType,
+    string EstDuration,
+    string Description);
+
+/// <summary>
+/// Carries a generated roadmap step and any validated resources needed to fill its catalogue gaps.
+/// </summary>
+public sealed record GeneratedRoadmapItem(
+    Guid SkillID,
+    string Title,
+    string Description,
+    string Priority,
+    IReadOnlyList<GeneratedLearningResource> Resources);
 /// <summary>
 /// Carries Generated Roadmap values used by an external integration.
 /// </summary>
@@ -65,6 +85,81 @@ public sealed class N8nRoadmapGenerator(
             return text;
         }
 
+        static string? OptionalText(JsonElement item, string name, int max)
+        {
+            if (!TryProperty(item, name, out var value) || value.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+
+            if (value.ValueKind != JsonValueKind.String) throw Invalid();
+            var text = value.GetString()?.Trim();
+            if (string.IsNullOrWhiteSpace(text) || text.Length > max) throw Invalid();
+            return text;
+        }
+
+        static string Choice(JsonElement item, string name, params string[] allowed)
+        {
+            string value = Text(item, name, 50);
+            return allowed.SingleOrDefault(option =>
+                       string.Equals(option, value, StringComparison.OrdinalIgnoreCase))
+                   ?? throw Invalid();
+        }
+
+        static IReadOnlyList<GeneratedLearningResource> Resources(
+            JsonElement item,
+            N8nRoadmapSkill skill,
+            HashSet<string> identities)
+        {
+            if (!TryProperty(item, "resources", out var values))
+            {
+                return Array.Empty<GeneratedLearningResource>();
+            }
+
+            if (values.ValueKind != JsonValueKind.Array ||
+                values.GetArrayLength() > skill.ResourceSlots ||
+                values.GetArrayLength() > 3)
+            {
+                throw Invalid();
+            }
+
+            var resources = new List<GeneratedLearningResource>();
+            foreach (JsonElement value in values.EnumerateArray())
+            {
+                if (value.ValueKind != JsonValueKind.Object) throw Invalid();
+                string provider = Text(value, "provider", 100);
+                string providerKey = LearningResourceIdentity.ProviderKey(provider);
+                string? providerResourceId = OptionalText(value, "providerResourceID", 200);
+                string url = Text(value, "url", 500);
+                if (providerKey.Length == 0 ||
+                    !LearningResourceIdentity.TryCanonicalizeHttpsUrl(url, out string canonicalUrl))
+                {
+                    throw Invalid();
+                }
+
+                if (!identities.Add($"{skill.SkillID}:url:{canonicalUrl}") ||
+                    providerResourceId is not null &&
+                    !identities.Add($"{skill.SkillID}:provider:{providerKey}:{providerResourceId}"))
+                {
+                    throw Invalid();
+                }
+
+                resources.Add(new GeneratedLearningResource(
+                    Text(value, "resourceName", 200),
+                    Choice(value, "resourceType", "Course", "Learning Path", "Tutorial", "Guide", "Practice", "Project", "Video", "Book", "Documentation", "Article"),
+                    canonicalUrl,
+                    provider,
+                    providerKey,
+                    providerResourceId,
+                    Choice(value, "difficultyLevel", "Beginner", "Intermediate", "Advanced", "All Levels"),
+                    Choice(value, "costType", "Free", "Freemium", "Paid"),
+                    Text(value, "estDuration", 100),
+                    Text(value, "description", 2000)));
+            }
+
+            return resources;
+        }
+
         root = Unwrap(root);
         if (root.ValueKind != JsonValueKind.Object ||
             !TryProperty(root, "success", out var success) || success.ValueKind != JsonValueKind.True ||
@@ -76,20 +171,28 @@ public sealed class N8nRoadmapGenerator(
 
         var requiredSkills = requestedSkills.Where(skill => skill.Status is "Missing" or "Partial")
             .Select(skill => skill.SkillID).ToHashSet();
+        var requestedById = requestedSkills.ToDictionary(skill => skill.SkillID);
         if (items.GetArrayLength() != requiredSkills.Count || items.GetArrayLength() > 100) throw Invalid();
 
         var generated = new List<GeneratedRoadmapItem>();
         var generatedTitles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var resourceIdentities = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var item in items.EnumerateArray())
         {
             if (item.ValueKind != JsonValueKind.Object ||
                 !Guid.TryParse(Text(item, "skillID", 36), out var skillId) || !requiredSkills.Remove(skillId))
                 throw Invalid();
+            N8nRoadmapSkill requestedSkill = requestedById[skillId];
             var priority = Text(item, "priority", 10).ToLowerInvariant();
             if (priority is not ("high" or "medium" or "low")) throw Invalid();
             var title = Text(item, "title", 150);
             if (!generatedTitles.Add(title)) throw Invalid();
-            generated.Add(new GeneratedRoadmapItem(skillId, title, Text(item, "description", 2000), priority));
+            generated.Add(new GeneratedRoadmapItem(
+                skillId,
+                title,
+                Text(item, "description", 2000),
+                priority,
+                Resources(item, requestedSkill, resourceIdentities)));
         }
         if (requiredSkills.Count != 0) throw Invalid();
         return new GeneratedRoadmap(Text(roadmap, "title", 150), generated);

@@ -1,4 +1,5 @@
 using CapstoneProjectBE.Models;
+using CapstoneProjectBE.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CapstoneProjectBE.Data;
@@ -160,6 +161,7 @@ internal static class MvpCatalogueSeed
             ResourceName = spec.Name,
             ResourceType = spec.Type,
             Url = spec.Url,
+            CanonicalUrl = CanonicalUrl(spec.Url),
             Provider = spec.Provider,
             DifficultyLevel = spec.Level,
             CostType = "Free",
@@ -169,6 +171,11 @@ internal static class MvpCatalogueSeed
             IsActive = true
         }).ToArray();
     }
+
+    private static string CanonicalUrl(string url) =>
+        LearningResourceIdentity.TryCanonicalizeHttpsUrl(url, out string canonicalUrl)
+            ? canonicalUrl
+            : throw new InvalidOperationException($"The seeded learning-resource URL is invalid: {url}");
 
     private static Job[] CreateJobs()
     {

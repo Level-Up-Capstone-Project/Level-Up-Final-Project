@@ -7,7 +7,7 @@ After validating the file type, signature and 5 MiB size limit, the backend extr
 
 CVs and transcripts must be PDF. The original user filename is replaced with `document.pdf` before the request, and personal details in the extracted text are redacted before the request. Require user consent, restrict n8n execution-log access, minimize execution retention, and use synthetic files for workflow tests. See [the workflow contracts](n8n/README.md).
 
-Roadmap generation validates every returned workflow skill against the trusted career catalogue. If n8n is unavailable or returns malformed, incomplete, duplicate, or unknown skill data, the backend generates one deterministic roadmap step per missing or partial career skill and links the same database-owned learning resources.
+Roadmap generation validates every returned workflow skill against the trusted career catalogue. For each weak skill, the backend reuses active database resources first and tells n8n only how many additional resource slots are missing. Valid public HTTPS candidates are normalized, deduplicated by provider identifier or canonical URL, persisted, and reused for later users with the same weak skill. If n8n is unavailable or returns malformed, incomplete, duplicate, or unknown data, the backend generates one deterministic roadmap step per missing or partial career skill and uses the resources already stored in the database.
 
 ## Google sign-in / sign-up
 
@@ -81,6 +81,8 @@ dotnet run --project backend/CapstoneProjectBE -- --adopt-existing-database
 ```
 
 Back up the database before adoption. The command refuses incomplete schemas and refuses databases that already contain the baseline migration. It runs the compatibility changes and migration-history update in one transaction, then applies any later migrations. After adoption, use `--migrate-database` for future migrations. The former manual SQL setup scripts and feature-specific setup switches are no longer used.
+
+The `AddDiscoveredLearningResources` migration adds canonical URLs and provider-owned resource identifiers. If migrations cannot be run through the application command, execute the equivalent idempotent script at `backend/scripts/20261026-add-discovered-learning-resources.sql` against the same PostgreSQL database. Use one method only; both record the EF migration history entry.
 
 The application accesses Postgres through the authenticated ASP.NET backend, not through Supabase's public Data API. The baseline enables row-level security on user-owned tables and revokes direct `anon` and `authenticated` table access. If a future feature intentionally uses the Data API, add narrowly scoped grants and ownership policies in a new reviewed migration.
 

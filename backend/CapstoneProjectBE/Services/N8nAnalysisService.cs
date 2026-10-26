@@ -54,6 +54,7 @@ public sealed class N8nAnalysisService(HttpClient http, IConfiguration config, I
                 resourceID = course.ResourceID,
                 resourceName = course.ResourceName,
                 provider = course.Provider,
+                providerResourceID = course.ProviderResourceID,
                 resourceType = course.ResourceType,
                 description = course.Description
             },
@@ -64,7 +65,9 @@ public sealed class N8nAnalysisService(HttpClient http, IConfiguration config, I
     public Task<JsonElement> GenerateRoadmapAsync(Guid requestId, Guid? careerID, string careerName, IReadOnlyList<N8nRoadmapSkill> skills, CancellationToken ct)
     {
         if (requestId == Guid.Empty || string.IsNullOrWhiteSpace(careerName) || skills is null || skills.Count == 0 ||
-            skills.Any(s => s is null || s.SkillID == Guid.Empty || string.IsNullOrWhiteSpace(s.SkillName) || s.Status is not ("Missing" or "Partial" or "Have")))
+            skills.Any(s => s is null || s.SkillID == Guid.Empty || string.IsNullOrWhiteSpace(s.SkillName) ||
+                s.Status is not ("Missing" or "Partial" or "Have") || s.ResourceSlots is < 0 or > 3 ||
+                s.ExistingResources is { Count: > 3 }))
             throw new ArgumentException("A request ID, target career and valid skills are required.");
         return SendAsync("Roadmap", new {requestId, targetCareer = new {careerID, careerName}, skills}, careerName, ct);
     }
@@ -128,5 +131,6 @@ public sealed record N8nKnowledgeCheckCourse(
     Guid ResourceID,
     string ResourceName,
     string? Provider,
+    string? ProviderResourceID,
     string? ResourceType,
     string? Description);

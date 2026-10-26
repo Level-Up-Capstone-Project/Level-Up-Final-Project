@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CapstoneProjectBE.Migrations
 {
     /// <summary>
-    /// Applies or describes database schema changes for App Db Context Model Snapshot.
+    /// Captures the current Entity Framework model used to calculate future schema migrations.
     /// </summary>
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -2325,6 +2325,12 @@ namespace CapstoneProjectBE.Migrations
                         .HasColumnName("resource_id")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<string>("CanonicalUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("canonical_url");
+
                     b.Property<string>("CostType")
                         .IsRequired()
                         .HasColumnType("text")
@@ -2353,6 +2359,16 @@ namespace CapstoneProjectBE.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("provider");
+
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("provider_key");
+
+                    b.Property<string>("ProviderResourceID")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("provider_resource_id");
 
                     b.Property<string>("ResourceName")
                         .IsRequired()
@@ -2384,12 +2400,25 @@ namespace CapstoneProjectBE.Migrations
 
                     b.HasIndex("SkillID");
 
-                    b.ToTable("learning_resources", (string)null);
+                    b.HasIndex("SkillID", "CanonicalUrl")
+                        .IsUnique()
+                        .HasDatabaseName("learning_resources_skill_canonical_url_key");
+
+                    b.HasIndex("SkillID", "ProviderKey", "ProviderResourceID")
+                        .IsUnique()
+                        .HasDatabaseName("learning_resources_skill_provider_resource_key")
+                        .HasFilter("provider_key IS NOT NULL AND provider_resource_id IS NOT NULL");
+
+                    b.ToTable("learning_resources", null, t =>
+                        {
+                            t.HasCheckConstraint("learning_resources_provider_identity_check", "provider_resource_id IS NULL OR provider_key IS NOT NULL");
+                        });
 
                     b.HasData(
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000001"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/training/paths/get-started-c-sharp-part-1",
                             CostType = "Free",
                             Description = "Learn C# syntax and build small console programs.",
                             DifficultyLevel = "Beginner",
@@ -2405,6 +2434,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000002"),
+                            CanonicalUrl = "https://exercism.org/tracks/csharp",
                             CostType = "Free",
                             Description = "Practise C# with mentored coding exercises.",
                             DifficultyLevel = "Beginner",
@@ -2420,6 +2450,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000003"),
+                            CanonicalUrl = "https://www.postgresql.org/docs/current/tutorial-sql.html",
                             CostType = "Free",
                             Description = "Learn relational querying directly from the PostgreSQL documentation.",
                             DifficultyLevel = "Beginner",
@@ -2435,6 +2466,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000004"),
+                            CanonicalUrl = "https://sqlbolt.com/",
                             CostType = "Free",
                             Description = "Complete browser-based SQL lessons and exercises.",
                             DifficultyLevel = "Beginner",
@@ -2450,6 +2482,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000005"),
+                            CanonicalUrl = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
                             CostType = "Free",
                             Description = "Understand requests, responses, methods and status codes.",
                             DifficultyLevel = "Beginner",
@@ -2465,6 +2498,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000006"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api",
                             CostType = "Free",
                             Description = "Build and test a REST API with ASP.NET Core.",
                             DifficultyLevel = "Intermediate",
@@ -2480,6 +2514,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000007"),
+                            CanonicalUrl = "https://dev.java/learn",
                             CostType = "Free",
                             Description = "Learn Java language basics and core APIs.",
                             DifficultyLevel = "Beginner",
@@ -2495,6 +2530,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000008"),
+                            CanonicalUrl = "https://exercism.org/tracks/java",
                             CostType = "Free",
                             Description = "Practise Java through focused coding exercises.",
                             DifficultyLevel = "Beginner",
@@ -2510,6 +2546,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000009"),
+                            CanonicalUrl = "https://docs.python.org/3/tutorial",
                             CostType = "Free",
                             Description = "Learn Python syntax, data structures and modules.",
                             DifficultyLevel = "Beginner",
@@ -2525,6 +2562,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000010"),
+                            CanonicalUrl = "https://exercism.org/tracks/python",
                             CostType = "Free",
                             Description = "Practise Python with progressive coding exercises.",
                             DifficultyLevel = "Beginner",
@@ -2540,6 +2578,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000011"),
+                            CanonicalUrl = "https://www.postgresql.org/docs/current/tutorial.html",
                             CostType = "Free",
                             Description = "Learn PostgreSQL concepts, SQL and database features.",
                             DifficultyLevel = "Beginner",
@@ -2555,6 +2594,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000012"),
+                            CanonicalUrl = "https://pgexercises.com/",
                             CostType = "Free",
                             Description = "Solve hands-on PostgreSQL query exercises.",
                             DifficultyLevel = "Intermediate",
@@ -2570,6 +2610,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000013"),
+                            CanonicalUrl = "https://react.dev/learn",
                             CostType = "Free",
                             Description = "Learn components, state, events and data flow.",
                             DifficultyLevel = "Beginner",
@@ -2585,6 +2626,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000014"),
+                            CanonicalUrl = "https://react.dev/learn/tutorial-tic-tac-toe",
                             CostType = "Free",
                             Description = "Build an interactive React application.",
                             DifficultyLevel = "Beginner",
@@ -2600,6 +2642,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000015"),
+                            CanonicalUrl = "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content",
                             CostType = "Free",
                             Description = "Learn semantic and accessible HTML structure.",
                             DifficultyLevel = "Beginner",
@@ -2615,6 +2658,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000016"),
+                            CanonicalUrl = "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Test_your_skills/HTML_text_basics",
                             CostType = "Free",
                             Description = "Test core HTML text and structure skills.",
                             DifficultyLevel = "Beginner",
@@ -2630,6 +2674,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000017"),
+                            CanonicalUrl = "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics",
                             CostType = "Free",
                             Description = "Learn selectors, the box model and common styling techniques.",
                             DifficultyLevel = "Beginner",
@@ -2645,6 +2690,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000018"),
+                            CanonicalUrl = "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout",
                             CostType = "Free",
                             Description = "Practise responsive layouts with Flexbox and Grid.",
                             DifficultyLevel = "Intermediate",
@@ -2660,6 +2706,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000019"),
+                            CanonicalUrl = "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
                             CostType = "Free",
                             Description = "Learn JavaScript syntax, functions, objects and asynchronous code.",
                             DifficultyLevel = "Beginner",
@@ -2675,6 +2722,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000020"),
+                            CanonicalUrl = "https://javascript.info/",
                             CostType = "Free",
                             Description = "Learn and practise modern JavaScript by topic.",
                             DifficultyLevel = "Beginner",
@@ -2690,6 +2738,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000021"),
+                            CanonicalUrl = "https://www.typescriptlang.org/docs/handbook/intro.html",
                             CostType = "Free",
                             Description = "Learn TypeScript's type system and everyday patterns.",
                             DifficultyLevel = "Beginner",
@@ -2705,6 +2754,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000022"),
+                            CanonicalUrl = "https://www.typescriptlang.org/play",
                             CostType = "Free",
                             Description = "Experiment with types and compiler feedback in the browser.",
                             DifficultyLevel = "Beginner",
@@ -2720,6 +2770,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000023"),
+                            CanonicalUrl = "https://git-scm.com/book/en/v2",
                             CostType = "Free",
                             Description = "Learn Git fundamentals, branching and collaboration.",
                             DifficultyLevel = "Beginner",
@@ -2735,6 +2786,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000024"),
+                            CanonicalUrl = "https://github.com/skills/introduction-to-github",
                             CostType = "Free",
                             Description = "Practise repositories, branches, commits and pull requests.",
                             DifficultyLevel = "Beginner",
@@ -2750,6 +2802,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000025"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/dotnet/core/get-started",
                             CostType = "Free",
                             Description = "Create and run a first .NET application.",
                             DifficultyLevel = "Beginner",
@@ -2765,6 +2818,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000026"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/training/paths/build-dotnet-applications-csharp",
                             CostType = "Free",
                             Description = "Build practical applications on the .NET platform.",
                             DifficultyLevel = "Intermediate",
@@ -2780,6 +2834,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000027"),
+                            CanonicalUrl = "https://nodejs.org/learn/getting-started/introduction-to-nodejs",
                             CostType = "Free",
                             Description = "Learn the Node.js runtime and server-side JavaScript basics.",
                             DifficultyLevel = "Beginner",
@@ -2795,6 +2850,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000028"),
+                            CanonicalUrl = "https://nodejs.org/api/test.html",
                             CostType = "Free",
                             Description = "Write and run automated tests using the built-in test runner.",
                             DifficultyLevel = "Intermediate",
@@ -2810,6 +2866,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000029"),
+                            CanonicalUrl = "https://docs.docker.com/get-started",
                             CostType = "Free",
                             Description = "Learn images, containers and Docker fundamentals.",
                             DifficultyLevel = "Beginner",
@@ -2825,6 +2882,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000030"),
+                            CanonicalUrl = "https://docs.docker.com/get-started/workshop",
                             CostType = "Free",
                             Description = "Containerise and update a sample application.",
                             DifficultyLevel = "Beginner",
@@ -2840,6 +2898,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000031"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/training/paths/microsoft-azure-fundamentals-describe-cloud-concepts",
                             CostType = "Free",
                             Description = "Learn foundational cloud and Azure concepts.",
                             DifficultyLevel = "Beginner",
@@ -2855,6 +2914,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000032"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/training/azure",
                             CostType = "Free",
                             Description = "Choose hands-on Azure modules for your target role.",
                             DifficultyLevel = "Beginner",
@@ -2870,6 +2930,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000033"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-dotnet-test",
                             CostType = "Free",
                             Description = "Create, run and maintain automated .NET unit tests.",
                             DifficultyLevel = "Intermediate",
@@ -2885,6 +2946,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000034"),
+                            CanonicalUrl = "https://jestjs.io/docs/getting-started",
                             CostType = "Free",
                             Description = "Write JavaScript and TypeScript unit tests.",
                             DifficultyLevel = "Beginner",
@@ -2900,6 +2962,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000035"),
+                            CanonicalUrl = "https://linuxjourney.com/",
                             CostType = "Free",
                             Description = "Learn Linux commands, permissions, processes and networking.",
                             DifficultyLevel = "Beginner",
@@ -2915,6 +2978,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000036"),
+                            CanonicalUrl = "https://overthewire.org/wargames/bandit",
                             CostType = "Free",
                             Description = "Practise Linux command-line problem solving.",
                             DifficultyLevel = "Beginner",
@@ -2930,6 +2994,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000037"),
+                            CanonicalUrl = "https://docs.github.com/en/actions/get-started/quickstart",
                             CostType = "Free",
                             Description = "Create a workflow that builds and tests code automatically.",
                             DifficultyLevel = "Beginner",
@@ -2945,6 +3010,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000038"),
+                            CanonicalUrl = "https://github.com/skills/hello-github-actions",
                             CostType = "Free",
                             Description = "Build a working CI workflow in a practice repository.",
                             DifficultyLevel = "Beginner",
@@ -2960,6 +3026,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000039"),
+                            CanonicalUrl = "https://support.microsoft.com/en-us/excel",
                             CostType = "Free",
                             Description = "Learn formulas, tables, charts and data analysis features.",
                             DifficultyLevel = "Beginner",
@@ -2975,6 +3042,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000040"),
+                            CanonicalUrl = "https://support.microsoft.com/en-us/office/overview-of-formulas-in-excel-ecfdc708-9162-49e8-b993-c311f47ca173",
                             CostType = "Free",
                             Description = "Practise common formulas with guided examples and a tutorial workbook.",
                             DifficultyLevel = "Beginner",
@@ -2990,6 +3058,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000041"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/training/powerplatform/power-bi",
                             CostType = "Free",
                             Description = "Learn to connect, model, visualise and share data.",
                             DifficultyLevel = "Beginner",
@@ -3005,6 +3074,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000042"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/power-bi/create-reports/desktop-excel-stunning-report",
                             CostType = "Free",
                             Description = "Build a report from an Excel workbook.",
                             DifficultyLevel = "Beginner",
@@ -3020,6 +3090,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000043"),
+                            CanonicalUrl = "https://learn.microsoft.com/en-us/training/paths/visualize-data-power-bi",
                             CostType = "Free",
                             Description = "Choose visuals and build clear interactive reports.",
                             DifficultyLevel = "Beginner",
@@ -3035,6 +3106,7 @@ namespace CapstoneProjectBE.Migrations
                         new
                         {
                             ResourceID = new Guid("40000000-0000-0000-0000-000000000044"),
+                            CanonicalUrl = "https://www.tableau.com/learn/training",
                             CostType = "Free",
                             Description = "Practise visual analytics with guided training videos.",
                             DifficultyLevel = "Beginner",

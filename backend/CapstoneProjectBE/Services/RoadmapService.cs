@@ -18,11 +18,16 @@ namespace CapstoneProjectBE.Services
         //completing resources updates progress, does not verify skill
         private readonly AppDbContext _context;
         private readonly N8nRoadmapGenerator _generator;
+        private readonly LearningResourceDiscoveryService _resourceDiscovery;
 
-        public RoadmapService(AppDbContext context, N8nRoadmapGenerator generator)
+        public RoadmapService(
+            AppDbContext context,
+            N8nRoadmapGenerator generator,
+            LearningResourceDiscoveryService resourceDiscovery)
         {
             _context = context;
             _generator = generator;
+            _resourceDiscovery = resourceDiscovery;
         }
         
         // GET /api/roadmaps/items/{id}/resources
@@ -55,6 +60,7 @@ namespace CapstoneProjectBE.Services
                         ResourceType = link.LearningResource.ResourceType,
                         Url = link.LearningResource.Url,
                         Provider = link.LearningResource.Provider,
+                        ProviderResourceID = link.LearningResource.ProviderResourceID,
                         DifficultyLevel = link.LearningResource.DifficultyLevel,
                         CostType = link.LearningResource.CostType,
                         EstDuration = link.LearningResource.EstDuration,
@@ -278,16 +284,59 @@ namespace CapstoneProjectBE.Services
             var roadmapSkills = workflowSkills.Where(skill => skill.Status is "Missing" or "Partial").ToList();
 
             var skillIDs = roadmapSkills.Select(skill => skill.SkillID).ToList();
+            var existingResourceRows = await _context.LearningResources
+                .AsNoTracking()
+                .Where(resource => skillIDs.Contains(resource.SkillID) && resource.IsActive)
+                .OrderBy(resource => resource.ResourceName)
+                .Select(resource => new
+                {
+                    resource.SkillID,
+                    resource.ResourceID,
+                    resource.ResourceName,
+                    resource.Provider,
+                    resource.Url,
+                    resource.ProviderResourceID
+                })
+                .ToListAsync(cancellationToken);
+            var resourcesBySkill = existingResourceRows
+                .GroupBy(resource => resource.SkillID)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Take(3).Select(resource => new N8nExistingLearningResource(
+                        resource.ResourceID,
+                        resource.ResourceName,
+                        resource.Provider,
+                        resource.Url,
+                        resource.ProviderResourceID)).ToList());
 
-            var resources = await _context.LearningResources
-            .AsNoTracking()
-            .Where(resource => skillIDs.Contains(resource.SkillID) && resource.IsActive)
-            .Select(resource => new { resource.ResourceID, resource.SkillID, resource.ResourceName})
-            .ToListAsync(cancellationToken);
+            workflowSkills = workflowSkills.Select(skill =>
+            {
+                IReadOnlyList<N8nExistingLearningResource> existing =
+                    resourcesBySkill.GetValueOrDefault(skill.SkillID) ?? [];
+                return skill with
+                {
+                    ResourceSlots = skill.Status is "Missing" or "Partial"
+                        ? Math.Max(0, 3 - existing.Count)
+                        : 0,
+                    ExistingResources = existing
+                };
+            }).ToList();
+            roadmapSkills = workflowSkills.Where(skill => skill.Status is "Missing" or "Partial").ToList();
 
             GeneratedRoadmap? generated = roadmapSkills.Count == 0
                 ? null
                 : await _generator.GenerateAsync(careerID, career.CareerName, workflowSkills, cancellationToken);
+
+            if (generated is not null)
+            {
+                await _resourceDiscovery.PersistAsync(generated, cancellationToken);
+            }
+
+            var resources = await _context.LearningResources
+                .AsNoTracking()
+                .Where(resource => skillIDs.Contains(resource.SkillID) && resource.IsActive)
+                .Select(resource => new { resource.ResourceID, resource.SkillID, resource.ResourceName})
+                .ToListAsync(cancellationToken);
 
             var now = DateTime.UtcNow;
 

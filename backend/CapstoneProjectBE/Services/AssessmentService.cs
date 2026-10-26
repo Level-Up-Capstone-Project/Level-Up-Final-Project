@@ -52,6 +52,7 @@ namespace CapstoneProjectBE.Services
                             resource.LearningResource.ResourceID,
                             resource.LearningResource.ResourceName,
                             resource.LearningResource.Provider,
+                            resource.LearningResource.ProviderResourceID,
                             resource.LearningResource.ResourceType,
                             resource.LearningResource.Description
                         })
@@ -75,6 +76,7 @@ namespace CapstoneProjectBE.Services
                 assessmentContext.Course.ResourceID,
                 assessmentContext.Course.ResourceName,
                 assessmentContext.Course.Provider,
+                assessmentContext.Course.ProviderResourceID,
                 assessmentContext.Course.ResourceType,
                 assessmentContext.Course.Description);
 
