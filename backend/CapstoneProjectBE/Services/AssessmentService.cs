@@ -71,6 +71,12 @@ namespace CapstoneProjectBE.Services
                     "Complete a recommended course before starting its knowledge check.");
             }
 
+            var active = await _context.SkillAssessments.Include(a => a.Questions)
+                .Where(a => a.UserID == userId && a.SkillID == skillId && a.RoadmapItemID == roadmapItemId &&
+                    a.CompletedAt == null && a.AttemptNumber != null && a.GeneratedAt != null)
+                .OrderByDescending(a => a.AttemptNumber).FirstOrDefaultAsync(cancellationToken);
+            if (active is not null) return MapAssessment(active);
+
             var course = new N8nKnowledgeCheckCourse(
                 assessmentContext.Course.ResourceID,
                 assessmentContext.Course.ResourceName,
@@ -98,6 +104,16 @@ namespace CapstoneProjectBE.Services
                     await _context.Database.ExecuteSqlInterpolatedAsync(
                         $"SELECT pg_advisory_xact_lock(hashtext({userId.ToString()}), hashtext({skillId.ToString()}))",
                         cancellationToken);
+                }
+
+                active = await _context.SkillAssessments.Include(a => a.Questions)
+                    .Where(a => a.UserID == userId && a.SkillID == skillId && a.RoadmapItemID == roadmapItemId &&
+                        a.CompletedAt == null && a.AttemptNumber != null && a.GeneratedAt != null)
+                    .OrderByDescending(a => a.AttemptNumber).FirstOrDefaultAsync(cancellationToken);
+                if (active is not null)
+                {
+                    await transaction.CommitAsync(cancellationToken);
+                    return MapAssessment(active);
                 }
 
                 int availableAttempt = (await _context.SkillAssessments

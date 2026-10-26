@@ -16,6 +16,7 @@ export default function useLearningProgress(account: string, token?: string, tar
     const owner = account.toLowerCase();
     const [state,setState] = useState<State>(() => empty(owner));
     const [topic,setTopic] = useState('');
+    const [savingProgress,setSavingProgress] = useState(false);
 
     const load = useCallback(async (signal?: AbortSignal) => {
         if (!token) {setState(empty(owner)); return;}
@@ -78,14 +79,21 @@ export default function useLearningProgress(account: string, token?: string, tar
     const completeResources=useCallback(async (selected:Topic, indexes:number[])=>{
         if(!token)return false;
         const pending=indexes.filter(index=>selected.resources[index]&&!selected.resources[index].isCompleted);
-        if(!pending.length)return true;
+        if(!pending.length)return selected.status === 'completed';
+        setSavingProgress(true);
         const pendingIndexes=new Set(pending);
         setState(currentState=>({...currentState,topics:currentState.topics.map(item=>item.roadmapItemID!==selected.roadmapItemID?item:{...item,resources:item.resources.map((resource,index)=>pendingIndexes.has(index)?{...resource,isCompleted:true,completedAt:new Date().toISOString()}:resource)})}));
         try {
-            await Promise.all(pending.map(index=>{const resource=selected.resources[index].resource;return apiRequest(`/api/roadmaps/items/${selected.roadmapItemID}/resources/${resource.resourceID}/complete`,{method:'POST',token});}));
+            // Completing resources in sequence lets the server observe the final item
+            // completion after all earlier resource updates have committed.
+            for (const index of pending) {
+                const resource=selected.resources[index].resource;
+                await apiRequest(`/api/roadmaps/items/${selected.roadmapItemID}/resources/${resource.resourceID}/complete`,{method:'POST',token});
+            }
             await load();
             return true;
-        } catch(error){setState(currentState=>({...currentState,error:error instanceof Error?error.message:'Could not save learning progress.'}));await load();return false;}
+        } catch(error){await load();setState(currentState=>({...currentState,error:error instanceof Error?error.message:'Could not save learning progress.'}));return false;}
+        finally {setSavingProgress(false);}
     },[token,load]);
 
     const setChecked:Dispatch<SetStateAction<boolean[]>>=action=>{
@@ -95,10 +103,16 @@ export default function useLearningProgress(account: string, token?: string, tar
         void completeResources(current,next.map((value,index)=>value&&!previous[index]?index:-1).filter(index=>index>=0));
     };
     const completeTopic=useCallback(async(name:string)=>{
+        if (savingProgress) return false;
         const selected=data.topics.find(item=>item.title===name);
         if(!selected)return false;
         return completeResources(selected,selected.resources.map((_,index)=>index));
-    },[completeResources,data.topics]);
+    },[completeResources,data.topics,savingProgress]);
+    const finishCurrentMission=async()=>{
+        if(!current || !current.resources.length || savingProgress)return false;
+        if(current.status === 'completed')return true;
+        return completeResources(current,current.resources.map((_,index)=>index));
+    };
     const toggleSavedTopic=async()=>{
         if(!token||!current||!current.resources.length)return;
         const remove=savedTopics.includes(current.title);
@@ -114,5 +128,5 @@ export default function useLearningProgress(account: string, token?: string, tar
     return {savedTopics,toggleSavedTopic,topic,setTopic,currentTopic:current,checked:current?.resources.map(resource=>resource.isCompleted)??[],setChecked,
         completed,completeTopic,taskProgress,learningGroups,resourcesForTopic,roadmapCareerName:data.roadmap?.careerName??'',
         careerSuggestions:data.careerSuggestions,generatingCareerID:data.generatingCareerID,generateRoadmap,
-        learningLoading:data.loading,learningError:data.error,reloadLearning:load};
+        learningLoading:data.loading,learningError:data.error,reloadLearning:load,finishCurrentMission,savingProgress};
 }

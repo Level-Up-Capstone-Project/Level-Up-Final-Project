@@ -102,6 +102,8 @@ namespace CapstoneProjectBE.Services
                 .ToDictionary(
                     group => group.Key,
                     group => group.Max(userSkill => userSkill.Weight));
+            foreach (var skillId in await TranscriptSkillEvidenceReader.GetLatestAsync(_context, userId, cancellationToken))
+                weights[skillId] = Math.Max(weights.GetValueOrDefault(skillId), UserSkillStatusResolver.ToMatchWeight(UserSkillStatusResolver.Partial));
 
             var targetCareerSkillIDs = profile?.TargetCareerID is Guid targetCareerId
                 ? (await _context.CareerSkills

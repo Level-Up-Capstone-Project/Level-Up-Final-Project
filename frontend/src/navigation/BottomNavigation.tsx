@@ -12,7 +12,7 @@ export default function BottomNavigation({ screen, go, inline = false }: { scree
     const s = useResponsiveStyles(styles);
     const insets = useSafeAreaInsets();
     const { width } = useWindowDimensions();
-    const active = screen === 'profileSettings' ? 'settings' : screen === 'job' ? 'jobs' : screen === 'complete' ? 'achievements' : ['topic','learning','analysis','skills'].includes(screen) ? 'missionHub' : screen;
+    const active = screen === 'profileSettings' ? 'settings' : ['topic','learning','analysis','skills','complete'].includes(screen) ? 'missionHub' : screen;
     return <View style={[s.nav, inline && { position:'relative',flexShrink:0 }, { paddingBottom: Math.max(10, insets.bottom) }]}>{tabs.map(
         /** Renders a item entry from its data. */
          ([route, icon, label]) => {

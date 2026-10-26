@@ -7,7 +7,6 @@ import { View, Pressable, Image, ScrollView, StyleSheet, Modal, useWindowDimensi
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import Text from '../components/Text';
-import BottomNavigation from '../navigation/BottomNavigation';
 import LocalVector from '../onboarding/LocalVector';
 import useResponsiveStyles from '../layout/useResponsiveStyles';
 import type { AppModel } from '../navigation/useAppModel';
@@ -83,7 +82,6 @@ export default function SettingsScreen({ model }: { model: AppModel }) {
                  () => { setPanel('Privacy & Data Settings'); setNotice(''); })}
             <Pressable accessibilityRole="button" accessibilityLabel="Log out" style={s.logout} onPress={model.signOut}><Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="rgba(225,19,19,0.7)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><Path d="M9 3H4V21H9M10 12H22M17 7L22 12L17 17"/></Svg><Text style={s.logoutText}>Log Out</Text></Pressable>
         </ScrollView>
-        <BottomNavigation screen={model.screen} go={model.go} inline/>
         <OpportunityNotifications visible={notificationsOpen} onClose={
             /** Updates whether the notification inbox is visible. */
              ()=>setNotificationsOpen(false)} alerts={notifications.alerts} unread={notifications.unread} onMarkAll={notifications.markAllRead} availableIds={model.opportunityModel.allOpportunities.map(

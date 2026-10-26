@@ -10,6 +10,34 @@ using Xunit;
 public class DashboardAnalysisTests
 {
     [Fact]
+    public async Task LatestTranscriptSkillsContributeToCareerAndJobMatches()
+    {
+        using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+        var userId = Guid.NewGuid();
+        var career = new Career { CareerID = Guid.NewGuid(), CareerName = "Developer" };
+        var skill = new Skill { SkillID = Guid.NewGuid(), SkillName = "SQL", Category = "Technical" };
+        db.Users.Add(new User { UserID = userId, Email = "skills@example.com", IsActive = true });
+        db.Careers.Add(career);
+        db.Skills.Add(skill);
+        db.CareerSkills.Add(new CareerSkill { CareerSkillID = Guid.NewGuid(), Career = career, Skill = skill, ImportanceLevel = 1 });
+        db.UserProfiles.Add(new UserProfile { ProfileID = Guid.NewGuid(), UserID = userId, TargetCareerID = career.CareerID });
+        db.TranscriptAnalyses.Add(new TranscriptAnalysis { AnalysisID = Guid.NewGuid(), UserID = userId, AnalysedAt = DateTime.UtcNow,
+            ResultJson = $"{{\"detectedSkills\":[{{\"skillID\":\"{skill.SkillID}\"}}]}}" });
+        var job = new Job { JobID = Guid.NewGuid(), MappedCareer = career, JobTitle = "Developer", CompanyName = "Example" };
+        job.JobSkills.Add(new JobSkill { JobSkillID = Guid.NewGuid(), Skill = skill, ImportanceLevel = 1 });
+        db.Jobs.Add(job);
+        await db.SaveChangesAsync();
+        var gap = await new SkillGapService(db).GetSkillGapAsync(userId, default);
+        Assert.NotNull(gap);
+        Assert.Equal(50m, gap.SkillMatchPercentage);
+        Assert.Equal("Partial", Assert.Single(gap.Skills).Status);
+        var match = await new JobMatchService(db).GetMatchForJobAsync(userId, job.JobID, default);
+        Assert.NotNull(match);
+        Assert.Equal(50m, match.SkillMatchScore);
+        Assert.Single(match.MatchedSkills);
+    }
+
+    [Fact]
     public async Task SavingTargetCareerCreatesIncompleteProfileAndEnablesReadiness()
     {
         using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);

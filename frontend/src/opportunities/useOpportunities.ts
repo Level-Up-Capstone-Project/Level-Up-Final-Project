@@ -5,7 +5,7 @@ import {apiRequest} from '../api/client';
 import { type EmploymentType, type Opportunity, type WorkModel } from './data';
 const empty: Opportunity[] = [];
 /** Manages opportunity data, search, filters, saved items and selection. */
-export default function useOpportunities(profileLocation?: string, account = 'default', workAreas:WorkArea[] = [], token?: string) {
+export default function useOpportunities(profileLocation?: string, account = 'default', workAreas:WorkArea[] = [], token?: string, revision = '') {
     const [byAccount,setByAccount] = useState<Record<string,Opportunity[]>>({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ export default function useOpportunities(profileLocation?: string, account = 'de
             if (!signal.aborted) setSaved(items.map(item => item.job.jobID));
         }).catch(cause => { if (!signal.aborted) setError(cause instanceof Error ? cause.message : 'Could not load saved jobs.'); });
         return () => controller.abort();
-    }, [accountKey, token]);
+    }, [accountKey, token, revision]);
     useEffect(() => {
         if (!selected) return;
         const controller = new AbortController();
