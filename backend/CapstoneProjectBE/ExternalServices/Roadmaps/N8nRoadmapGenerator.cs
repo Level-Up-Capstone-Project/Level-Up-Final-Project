@@ -10,7 +10,8 @@ public sealed record GeneratedRoadmapItem(Guid SkillID, string Title, string Des
 /// <summary>
 /// Carries Generated Roadmap values used by an external integration.
 /// </summary>
-public sealed record GeneratedRoadmap(string Title, IReadOnlyList<GeneratedRoadmapItem> Items);
+public sealed record GeneratedLearningResource(string Provider, string CourseId, string Title, string Url, IReadOnlyList<string> MatchedSkills, string AccessType);
+public sealed record GeneratedRoadmap(string Title, IReadOnlyList<GeneratedRoadmapItem> Items, IReadOnlyList<GeneratedLearningResource>? LearningResources = null);
 
 /// <summary>
 /// Provides N8n Roadmap Generator integration behavior.
@@ -92,6 +93,31 @@ public sealed class N8nRoadmapGenerator(
             generated.Add(new GeneratedRoadmapItem(skillId, title, Text(item, "description", 2000), priority));
         }
         if (requiredSkills.Count != 0) throw Invalid();
-        return new GeneratedRoadmap(Text(roadmap, "title", 150), generated);
+        var resources = new List<GeneratedLearningResource>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (TryProperty(roadmap, "learningResources", out var recommendations) || TryProperty(root, "learningResources", out recommendations))
+        {
+            if (recommendations.ValueKind != JsonValueKind.Array || recommendations.GetArrayLength() > 100) throw Invalid();
+            foreach (var resource in recommendations.EnumerateArray())
+            {
+                if (resource.ValueKind != JsonValueKind.Object) throw Invalid();
+                var provider = Text(resource, "provider", 100);
+                var courseId = Text(resource, "courseId", 200);
+                var title = Text(resource, "title", 200);
+                var url = Text(resource, "url", 500);
+                var accessType = Text(resource, "accessType", 100);
+                if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps ||
+                    !string.IsNullOrEmpty(uri.UserInfo)) throw Invalid();
+                if (!TryProperty(resource, "matchedSkills", out var matches) || matches.ValueKind != JsonValueKind.Array || matches.GetArrayLength() > 100) throw Invalid();
+                var names = new List<string>();
+                foreach (var match in matches.EnumerateArray())
+                {
+                    if (match.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(match.GetString()) || match.GetString()!.Length > 200) throw Invalid();
+                    names.Add(match.GetString()!.Trim());
+                }
+                if (seen.Add(provider + "\n" + courseId)) resources.Add(new(provider, courseId, title, url, names, accessType));
+            }
+        }
+        return new GeneratedRoadmap(Text(roadmap, "title", 150), generated, resources);
     }
 }

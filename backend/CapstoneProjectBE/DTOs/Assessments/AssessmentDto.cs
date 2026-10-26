@@ -20,6 +20,7 @@ namespace CapstoneProjectBE.DTOs.Assessments
     {
         public Guid QuestionID { get; set; }
         public string QuestionText { get; set; } = string.Empty;
+        public string QuestionType { get; set; } = "MultipleChoice";
         public IReadOnlyList<string> Choices { get; set; } = Array.Empty<string>();
         public int QuestionOrder { get; set; }
     }

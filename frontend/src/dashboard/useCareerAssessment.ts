@@ -16,12 +16,14 @@ export type CareerAssessment = {
 export default function useCareerAssessment(account: string, token?: string, revision = '', targetRole = '', roleIndex = 0) {
     const [byAccount,setByAccount] = useState<Record<string,CareerAssessment | null>>({});
     const [loadedAccounts,setLoadedAccounts] = useState<Record<string,boolean>>({});
+    const [assessmentError,setAssessmentError] = useState('');
     const key = account.toLowerCase();
     const careerAssessment = key in byAccount ? byAccount[key] : null;
     const dashboardLoaded = loadedAccounts[key] ?? false;
     useEffect(() => {
         if (!token) return;
         const controller = new AbortController();
+        setAssessmentError('');
         const options = {token, signal: controller.signal};
         const dashboardRequest = async () => {
             const loadDashboard = () => apiRequest<{careerReadinessScore: number | null; cvQualityScore: number | null; targetCareer: {careerName: string} | null}>('/api/dashboard', options);
@@ -45,8 +47,11 @@ export default function useCareerAssessment(account: string, token?: string, rev
                 apiRequest<{career:{careerName:string};skillMatchPercentage:number;skills:{skillName:string;status:string}[]}>('/api/skill-gap', options),
             ]);
             if (controller.signal.aborted) return;
+            if (skillGap[0].status === 'rejected') setAssessmentError('Select a supported target career in Profile Settings, or retry if your connection is unavailable.');
             const statusScore = (status:string) => status === 'Have' ? 100 : status === 'Partial' ? 50 : 0;
-            const gap = skillGap[0].status === 'fulfilled' ? skillGap[0].value : null;
+            const loadedGap = skillGap[0].status === 'fulfilled' ? skillGap[0].value : null;
+            const gap = loadedGap && (!targetRole.trim() || loadedGap.career.careerName.toLowerCase() === targetRole.trim().toLowerCase()) ? loadedGap : null;
+            if (loadedGap && !gap) setAssessmentError('This role is not linked to a supported target career. Choose one in Profile Settings.');
             const trackedSkills = profileSkills[0].status === 'fulfilled' ? profileSkills[0].value : [];
             const skills = gap
                 ? gap.skills.map(skill => ({name:skill.skillName, score:statusScore(skill.status), level:skill.status}))
@@ -75,5 +80,5 @@ export default function useCareerAssessment(account: string, token?: string, rev
     const setCareerAssessment =  (assessment: CareerAssessment | null) => setByAccount(
         /** Builds the next by account value from its previous state. */
          old => ({...old,[key]:assessment}));
-    return {careerAssessment,dashboardLoaded,setCareerAssessment};
+    return {careerAssessment,dashboardLoaded,setCareerAssessment,assessmentError};
 }

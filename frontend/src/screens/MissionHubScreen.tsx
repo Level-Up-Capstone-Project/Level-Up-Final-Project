@@ -3,7 +3,6 @@ import {useEffect} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ScreenHeader, {screenHeaderTop} from '../components/ScreenHeader';
 import Text from '../components/Text';
-import BottomNavigation from '../navigation/BottomNavigation';
 import OpportunityIcon from '../opportunities/OpportunityIcon';
 import VignettePair from '../components/VignettePair';
 import useResponsiveStyles from '../layout/useResponsiveStyles';
@@ -72,7 +71,6 @@ export default function MissionHubScreen({model}:{model:AppModel}) {
                     </Pressable>)}
                 </View>
             </ScrollView>
-            <BottomNavigation screen={model.screen} go={model.go}/>
         </View>
     </View>;
 }

@@ -2,8 +2,7 @@ import type {BundledAsset} from '../platform/assets';
 /** Displays details and actions for the selected career opportunity. */
 import ScreenHeader, {screenHeaderTop} from '../components/ScreenHeader';
 import VignettePair from '../components/VignettePair';
-import BottomNavigation from '../navigation/BottomNavigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Text from '../components/Text';
@@ -20,9 +19,11 @@ export default function JobDetailScreen({ model }: { model: AppModel }) {
     const jobs = model.opportunityModel;
     const opportunity = jobs.selected;
     const [notice, setNotice] = useState('');
+    useEffect(() => { setNotice(''); }, [opportunity?.id, opportunity?.applicationUrl]);
     const saved = !!opportunity && jobs.saved.includes(opportunity.id);
     /** Opens the selected opportunity application link, or displays an availability message. */
     const apply =  async () => {
+        setNotice('');
         const url = opportunity?.applicationUrl;
         if (!url || !/^https?:\/\//i.test(url)) { setNotice('A company application link is not available yet.'); return; }
         try { await Linking.openURL(url); } catch { setNotice('Unable to open the application link. Please try again.'); }
@@ -62,7 +63,6 @@ export default function JobDetailScreen({ model }: { model: AppModel }) {
             {!!jobs.error && <Text accessibilityRole="alert" style={s.notice}>{jobs.error}</Text>}
             {!!notice && <Text accessibilityRole="alert" style={s.notice}>{notice}</Text>}
         </ScrollView>
-        <BottomNavigation screen={model.screen} go={model.go}/>
     </View></View>;
 }
 const base = StyleSheet.create({
