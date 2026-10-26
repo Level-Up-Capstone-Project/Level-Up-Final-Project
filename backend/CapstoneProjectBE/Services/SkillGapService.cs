@@ -56,6 +56,7 @@ namespace CapstoneProjectBE.Services
                     assessment.SkillID == userSkill.SkillID &&
                     assessment.CompletedAt != null)
             }).ToDictionaryAsync(userSkill => userSkill.SkillID, cancellationToken);
+            var transcriptSkills = await TranscriptSkillEvidenceReader.GetLatestAsync(_context, userId, cancellationToken);
 
             decimal totalWeight = 0;
             decimal achievedWeight = 0;
@@ -73,6 +74,8 @@ namespace CapstoneProjectBE.Services
                         userSkill.IsKnowledgeVerified,
                         userSkill.HasAssessmentAttempt);
                 }
+                if (databaseStatus == UserSkillStatusResolver.Missing && transcriptSkills.Contains(requiredSkill.SkillID))
+                    databaseStatus = UserSkillStatusResolver.Partial;
 
                 totalWeight += requiredSkill.ImportanceLevel;
                 achievedWeight += requiredSkill.ImportanceLevel * UserSkillStatusResolver.ToMatchWeight(databaseStatus);

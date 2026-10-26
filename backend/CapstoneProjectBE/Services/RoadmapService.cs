@@ -382,6 +382,26 @@ namespace CapstoneProjectBE.Services
                     });
                 }
 
+                foreach (var recommendation in (generated?.LearningResources ?? Array.Empty<GeneratedRoadmapRecommendation>())
+                    .Where(resource => resource.MatchedSkills.Any(name => string.Equals(name, skill.SkillName, StringComparison.OrdinalIgnoreCase)))
+                    .DistinctBy(resource => resource.Url, StringComparer.OrdinalIgnoreCase))
+                {
+                    var existing = await _context.LearningResources.FirstOrDefaultAsync(resource =>
+                        resource.SkillID == skill.SkillID && resource.Url == recommendation.Url, cancellationToken);
+                    if (existing is not null && skillResources.Any(resource => resource.ResourceID == existing.ResourceID)) continue;
+                    item.Resources.Add(new RoadmapItemResource
+                    {
+                        LearningResource = existing ?? new LearningResource
+                        {
+                            SkillID = skill.SkillID, ResourceName = recommendation.Title,
+                            Provider = recommendation.Provider, Url = recommendation.Url,
+                            ResourceType = "Course", CostType = recommendation.AccessType,
+                            DifficultyLevel = "", EstDuration = "", Description = "", SourceType = "n8n", IsActive = true
+                        },
+                        IsCompleted = false
+                    });
+                }
+
                 roadmap.Items.Add(item);
 
             }

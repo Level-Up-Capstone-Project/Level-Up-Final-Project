@@ -78,7 +78,7 @@ export default function useAppModel() {
     /** Selects an outcome message and its continuation screen. */
     const showFeedback= (kind:FeedbackKind,next:Screen=screen,message?:string)=>setFeedback({kind,next,message});
     const roles = account.targetRoles || [];
-    const opportunityModel = useOpportunities(account.location, account.email, account.workAreas, account.token);
+    const opportunityModel = useOpportunities(account.location, account.email, account.workAreas, account.token, screen === 'skills' || screen === 'jobs' ? screen : '');
     const opportunityNotifications = useOpportunityNotifications(account.email, opportunityModel.allOpportunities);
     const [cvAssessments,setCvAssessments] = useState<Record<string,CvAssessment|null>>({});
     const rawCvAssessment=cvAssessments[account.email.toLowerCase()];
@@ -147,7 +147,7 @@ export default function useAppModel() {
     const [query, setQuery] = useState('');
     const [remote, setRemote] = useState(false);
     const cvAssessment=rawCvAssessment&&(!cvDocument ? rawCvAssessment.documentUri.startsWith('saved:') : rawCvAssessment.documentUri===cvDocument.uri)&&(rawCvAssessment.score===null||(Number.isFinite(rawCvAssessment.score)&&rawCvAssessment.score>=0&&rawCvAssessment.score<=100))?rawCvAssessment:null;
-    const { careerAssessment, dashboardLoaded: careerAssessmentLoaded, setCareerAssessment } = useCareerAssessment(account.email, account.token, `${rawCvAssessment?.analysedAt ?? ''}:${transcriptAssessment?.analysedAt ?? ''}:${screen === 'home'}`, roles[role] ?? '', role);
+    const { careerAssessment, dashboardLoaded: careerAssessmentLoaded, setCareerAssessment, assessmentError } = useCareerAssessment(account.email, account.token, `${rawCvAssessment?.analysedAt ?? ''}:${transcriptAssessment?.analysedAt ?? ''}:${screen === 'home' || screen === 'skills'}:${account.targetCareerID ?? ''}`, roles[role] ?? '', role);
     const documentAnalysisEntry = documentEntry(cvAnalysis.status, transcriptAnalysis.status);
     const [job, setJob] = useState('');
     const { savedTopics, toggleSavedTopic, topic, setTopic, currentTopic, checked, setChecked, completed, completeTopic, taskProgress,
@@ -242,6 +242,6 @@ export default function useAppModel() {
         }
     };
     const auth = ['signin', 'signup', 'forgot', 'otp', 'reset'].includes(screen);
-    return { documentAnalysisEntry, transcriptAssessment: transcriptAssessment?.owner === account.email.toLowerCase() && (!transcriptDocument || transcriptAssessment.documentUri === transcriptDocument.uri) ? transcriptAssessment : null, feedback,showFeedback,continueFeedback,signOut,consent,withdrawConsent,roles,cvAssessment, setCvAssessment, savedTopics, toggleSavedTopic, earnedBadgeIds, opportunityNotifications, careerAssessment, careerAssessmentLoaded, setCareerAssessment, taskProgress, learningGroups, resourcesForTopic, currentTopic, roadmapCareerName, careerSuggestions, generatingCareerID, generateRoadmap, learningLoading, learningError, reloadLearning, opportunityModel, cvRunner, transcriptRunner, cvAnalysis, updateCvAnalysis, transcriptAnalysis, updateTranscriptAnalysis, mira, legalDocument, openLegal, closeLegal, width, screen, setScreen, account, setAccount, error, setError, file, setFile, cvDocument, setCvDocument, transcriptDocument, setTranscriptDocument, query, setQuery, remote, setRemote, role, setRole, job, setJob, topic, setTopic, checked, setChecked, completed, completeTopic, go, replace, goBack, resetTo, info, pick, auth };
+    return { documentAnalysisEntry, transcriptAssessment: transcriptAssessment?.owner === account.email.toLowerCase() && (!transcriptDocument || transcriptAssessment.documentUri === transcriptDocument.uri) ? transcriptAssessment : null, feedback,showFeedback,continueFeedback,signOut,consent,withdrawConsent,roles,cvAssessment, setCvAssessment, savedTopics, toggleSavedTopic, earnedBadgeIds, opportunityNotifications, careerAssessment, careerAssessmentLoaded, assessmentError, setCareerAssessment, taskProgress, learningGroups, resourcesForTopic, currentTopic, roadmapCareerName, careerSuggestions, generatingCareerID, generateRoadmap, learningLoading, learningError, reloadLearning, opportunityModel, cvRunner, transcriptRunner, cvAnalysis, updateCvAnalysis, transcriptAnalysis, updateTranscriptAnalysis, mira, legalDocument, openLegal, closeLegal, width, screen, setScreen, account, setAccount, error, setError, file, setFile, cvDocument, setCvDocument, transcriptDocument, setTranscriptDocument, query, setQuery, remote, setRemote, role, setRole, job, setJob, topic, setTopic, checked, setChecked, completed, completeTopic, go, replace, goBack, resetTo, info, pick, auth };
 }
 export type AppModel = ReturnType<typeof useAppModel>;

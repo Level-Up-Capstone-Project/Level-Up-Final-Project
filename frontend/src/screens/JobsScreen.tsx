@@ -3,7 +3,6 @@ import type {BundledAsset} from '../platform/assets';
 import ScreenHeader, {screenHeaderTop} from '../components/ScreenHeader';
 import NotificationBell from '../notifications/NotificationBell';
 import OpportunityNotifications from '../notifications/OpportunityNotifications';
-import BottomNavigation from '../navigation/BottomNavigation';
 import { useEffect, useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -86,7 +85,6 @@ export default function JobsScreen({ model }: { model: AppModel }) {
                  () => { jobs.reset(); setNotice(''); }} style={s.option}><Text style={s.gold}>Clear filters</Text></Pressable></View>}
 
         </ScrollView>
-        <BottomNavigation screen={model.screen} go={model.go}/>
         <OpportunityNotifications visible={notificationsOpen} onClose={
             /** Updates whether the notification inbox is visible. */
              ()=>setNotificationsOpen(false)} alerts={notifications.alerts} unread={notifications.unread} onMarkAll={notifications.markAllRead} availableIds={jobs.allOpportunities.map(

@@ -14,6 +14,23 @@ namespace CapstoneProjectBE.Tests;
 public sealed class AssessmentServiceTests
 {
     [Fact]
+    public async Task CandidateQuestionResponseOmitsAnswerKeysAndChecksOwnership()
+    {
+        await using var context = CreateContext();
+        var seed = await SeedAssessmentAsync(context);
+        var assessment = await context.SkillAssessments.SingleAsync();
+        assessment.RoadmapItemID = Guid.NewGuid();
+        await context.SaveChangesAsync();
+        var service = new AssessmentService(context, null!);
+        Assert.Null(await service.GetByIdAsync(Guid.NewGuid(), seed.AssessmentId, default));
+        var result = await service.GetByIdAsync(seed.UserId, seed.AssessmentId, default);
+        var json = System.Text.Json.JsonSerializer.Serialize(result);
+        Assert.DoesNotContain("CorrectAnswer", json);
+        Assert.DoesNotContain("MarkingGuidance", json);
+        Assert.Contains("MultipleChoice", json);
+    }
+
+    [Fact]
     public async Task SubmitReturnsScoredContractAndOrderedAnswerReview()
     {
         await using var context = CreateContext();

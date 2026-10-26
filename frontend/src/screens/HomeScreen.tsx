@@ -9,7 +9,6 @@ import Svg, { Circle } from 'react-native-svg';
 import Text from '../components/Text';
 import LocalVector from '../onboarding/LocalVector';
 import OpportunityIcon from '../opportunities/OpportunityIcon';
-import BottomNavigation from '../navigation/BottomNavigation';
 import useResponsiveStyles from '../layout/useResponsiveStyles';
 import type { AppModel } from '../navigation/useAppModel';
 import type { Screen } from '../navigation/types';
@@ -65,7 +64,7 @@ export default function HomeScreen({ model }: { model: AppModel }) {
     return <View testID="home-dashboard" style={s.safe}><View style={s.canvas}>
         <View pointerEvents="none" style={StyleSheet.absoluteFill}>
             <Image testID="home-landscape" source={{uri:'/assets/home/landscape.png'}} style={s.landscape} resizeMode="cover"/>
-            <View pointerEvents="none" style={{position:'absolute',top:0,left:0,right:0,height:240*scale,backgroundColor:'rgba(0,8,12,.18)'}}/>
+            <View pointerEvents="none" style={{position:'absolute',top:0,left:0,right:0,height:240*scale,backgroundColor:'rgba(0,8,12,.58)'}}/>
             <VignettePair height={885.372*scale}/>
             <View style={{position:'absolute',top:0,opacity:.2}}>{vector({uri:'/assets/home/upper.svg'},408.8,186.551)}</View><View style={{position:'absolute',bottom:0,opacity:.2}}>{vector({uri:'/assets/home/lower.svg'},408.8,310.065)}</View>
         </View>
@@ -77,7 +76,7 @@ export default function HomeScreen({ model }: { model: AppModel }) {
             <View style={s.greeting}><View style={s.welcomeCopy}><Text style={s.welcome}>WELCOME BACK,</Text><View style={s.nameRow}><Text style={[s.name,{flexShrink:1}]}>{(model.account.name.trim().split(/\s+/)[0] || 'Explorer').toUpperCase()}.</Text><Image testID="home-wave-icon" accessible={false} source={{uri:'/assets/home/wave.png'}} resizeMode="contain" style={s.wave}/></View></View></View>
             <View style={s.readinessCard}><Text style={s.eyebrow}>CAREER READINESS</Text><View style={s.readinessRow}><View style={s.readinessCopy}><Text style={s.future}>{displayScore === null ? 'Your journey\nstarts here.' : 'Your future is\ntaking shape.'}</Text><Text style={s.stats}>{trackedSkills === undefined ? '—' : trackedSkills} skills tracked{'\n'}{remaining.length} missions active</Text></View><View style={s.ring}><Svg width="100%" height="100%" viewBox="0 0 94 94"><Circle cx={47} cy={47} r={44} fill="none" stroke="#c8c8c8" strokeWidth={6}/>{displayScore !== null && <Circle testID="readiness-arc" cx={47} cy={47} r={44} fill="none" stroke="#d4af53" strokeWidth={6} strokeDasharray={`${2*Math.PI*44}`} strokeDashoffset={2*Math.PI*44*(1-displayScore/100)} transform="rotate(-90 47 47)"/>}</Svg><View style={s.ringCopy}><Text testID="home-readiness" style={s.percent}>{displayScore === null ? '—' : `${Math.round(displayScore)}%`}</Text><Text style={[s.ringLabel,{fontSize:Math.max(9,11*scale)}]}>{scoreLabel}</Text></View></View></View>
                 <View style={s.divider}>{vector({uri:'/assets/home/divider.svg'},337,.5)}</View>
-                <View style={s.trendRow}><Text testID="home-readiness-trend" style={s.trend}>{typeof data?.readinessChangeThisMonth === 'number' ? `${data.readinessChangeThisMonth > 0 ? '+' : ''}${data.readinessChangeThisMonth}% readiness this month` : 'Monthly trend not available'}</Text><Text style={[s.status,{color:data?.onTrack === true ? '#65deaa' : '#a6a6a4'}]}>{data?.onTrack === true ? '↗ On track' : data?.onTrack === false ? 'Needs attention' : readiness !== null ? 'Baseline' : displayScore !== null ? 'CV analysed' : 'Pending'}</Text></View>
+                <View style={s.trendRow}>{typeof data?.readinessChangeThisMonth === 'number' && <Text testID="home-readiness-trend" style={s.trend}>{`${data.readinessChangeThisMonth > 0 ? '+' : ''}${data.readinessChangeThisMonth}% readiness this month`}</Text>}<Text style={[s.status,{color:data?.onTrack === true ? '#65deaa' : '#a6a6a4'}]}>{data?.onTrack === true ? '↗ On track' : data?.onTrack === false ? 'Needs attention' : readiness !== null ? 'Baseline' : displayScore !== null ? 'CV analysed' : 'Pending'}</Text></View>
             </View>
             <View style={s.sectionHead}><Text style={s.sectionTitle}>Your command centre</Text><Pressable accessibilityRole="button" accessibilityLabel={expanded ? 'View fewer shortcuts' : 'View all shortcuts'} onPress={
                 /** Handles the on press for this component. */
@@ -97,7 +96,6 @@ export default function HomeScreen({ model }: { model: AppModel }) {
                 <View accessibilityRole="progressbar" accessibilityLabel="Next mission progress" accessibilityValue={{min:0,max:100,now:total ? Math.round(done/total*100) : 0}} style={s.progress}><View testID="home-mission-progress" style={[s.progressFill,{width:`${total ? done/total*100 : 0}%`}]}/></View>
             </Pressable>
         </ScrollView>
-        <BottomNavigation screen={model.screen} go={model.go} inline/>
         <Modal visible={expanded} transparent animationType="fade" onRequestClose={
             /** Handles the on request close for this component. */
              () => setExpanded(false)}><View style={s.scrim}><View style={s.dialog}><Text style={s.sectionTitle}>Your command centre</Text><ScrollView style={{maxHeight:height*.65}} contentContainerStyle={{gap:10,paddingVertical:16}}>{[...shortcuts.map(

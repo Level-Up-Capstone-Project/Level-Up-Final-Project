@@ -23,6 +23,8 @@ export default function SkillsMatchScreen({model}:{model:AppModel}) {
     /** Checks that a skill has a valid score between zero and one hundred. */
     const skills=(result?.skills??model.careerAssessment?.skills??[]).filter( skill=>Number.isFinite(skill.score)&&skill.score>=0&&skill.score<=100);
     const score=result?.overall??null;
+    const matchedJobs = [...(model.opportunityModel?.allOpportunities ?? [])].filter(job => job.match !== null)
+        .sort((a,b)=>(b.match ?? 0)-(a.match ?? 0)).slice(0,3);
     /** Displays bundled vector artwork at the calculated screen scale. */
     const vector= (source:BundledAsset,height:number)=><View style={{width:408.8,height,transformOrigin:'top left',transform:[{scale}]}}><LocalVector source={source} width={408.8} height={height}/></View>;
     useEffect(
@@ -47,12 +49,13 @@ export default function SkillsMatchScreen({model}:{model:AppModel}) {
             <Text style={s.eyebrow}>YOUR CURRENT LOADOUT</Text>
             <Pressable accessibilityRole="button" accessibilityLabel="Choose target role" onPress={
                 /** Handles the on press for this component. */
-                 ()=>setSelectRole(true)} style={[s.card,s.roleCard]}><View style={s.roleIcon}><Image source={{uri:'/assets/cv-analysis/b1e5a.png'}} resizeMode="stretch" style={{position:'absolute',width:61.77*scale,height:48.97*scale,left:-12.07*scale,top:-7.72*scale}}/></View><View style={s.copy}><Text style={s.label}>Target Role</Text><Text style={s.small}>{roles[model.role] || model.careerAssessment?.targetCareer || 'Set your target roles'}</Text></View><ChevronRight size={20*scale} color="#d4af53"/></Pressable>
+                 ()=>setSelectRole(true)} style={[s.card,s.roleCard]}><View style={s.roleIcon}><Image source={{uri:'/assets/cv-analysis/b1e5a.png'}} resizeMode="stretch" style={{position:'absolute',width:61.77*scale,height:48.97*scale,left:-12.07*scale,top:-7.72*scale}}/></View><View style={s.copy}><Text style={s.label}>Target Role</Text><Text style={s.small}>{model.careerAssessment?.targetCareer || roles[model.role] || 'Set your target roles'}</Text></View><ChevronRight size={20*scale} color="#d4af53"/></Pressable>
             <View style={s.tabs}><Pressable accessibilityRole="tab" accessibilityState={{selected:false}} accessibilityLabel="CV Analysis" onPress={
                 /** Opens the analysis screen. */
                  ()=>model.go('analysis')} style={s.tab}><Text style={s.label}>CV Analysis</Text></Pressable><View accessibilityRole="tab" accessibilityState={{selected:true}} style={[s.tab,s.selectedTab]}><Text style={s.selectedTabText}>Skills Match</Text></View></View>
             <View style={[s.card,s.scoreCard]}><View testID="skill-match-ring" accessibilityLabel={score===null?'Overall skill match pending':`Overall skill match ${score}%`} style={s.ring}><Svg width={94*scale} height={94*scale} viewBox="0 0 94 94"><Circle cx={47} cy={47} r={44} fill="none" stroke="#d1d1d6" strokeWidth={6}/>{score!==null&&<Circle cx={47} cy={47} r={44} fill="none" stroke="#d4af53" strokeWidth={6} strokeDasharray={`${2*Math.PI*44*score/100} ${2*Math.PI*44}`} transform="rotate(-90 47 47)"/>}</Svg><View style={s.ringText}><Text testID="overall-skill-match" style={s.score}>{score===null?'—':score+'%'}</Text><Text style={s.ringCaption}>Skill Match</Text></View></View><View style={s.copy}><Text style={s.goldHeading}>OVERALL SKILL MATCH</Text><Text style={s.scoreDescription}>{result?.summary||'Role matching is pending. Existing skill proficiency is shown below.'}</Text></View></View>
             <View style={s.breakdownHeader}><Text style={s.heading}>Skill Breakdown</Text><Text testID="skills-count" style={s.goldHeading}>{skills.length} SKILLS</Text></View>
+            {!!model.assessmentError && <Pressable accessibilityRole="button" onPress={()=>model.go('profileSettings')} style={s.card}><Text style={s.empty}>{model.assessmentError} Tap to open Profile Settings.</Text></Pressable>}
             <View style={s.breakdown}>{!skills.length&&<View style={s.emptyState}>
                 <Text style={s.empty}>No skill data is available yet. Analyse your CV to add detected skills, or select a target role to see its requirements.</Text>
                 <Pressable accessibilityRole="button" onPress={()=>model.go('analysis')} style={s.emptyAction}><Text style={s.emptyActionText}>Go to CV Analysis</Text></Pressable>
@@ -64,6 +67,10 @@ export default function SkillsMatchScreen({model}:{model:AppModel}) {
                 const status='status' in skill?skill.status:'level' in skill?skill.level:'UP NEXT';
                 return <View key={skill.name+'-'+index}><View testID={'skill-row-'+index} style={s.skillRow}><View style={s.skillTop}><Text style={s.skillName}>{skill.name}</Text><View style={[s.skillBadge,{backgroundColor:strong?'#163a31':building?'#3c2e1c':'#3e2724'}]}><Text style={[s.skillBadgeText,{color:strong?'#55c6a0':building?'#d4af53':'#e17864'}]}>{status.toUpperCase()}</Text></View></View><View style={s.progressRow}><View accessibilityRole="progressbar" accessibilityLabel={skill.name+(result?' match':' proficiency')} accessibilityValue={{min:0,max:100,now:skill.score}} style={s.track}><View style={[s.fill,{width:`${skill.score}%`,backgroundColor:color}]}/></View><Text style={s.matchText}>{skill.score}% {result?'match':'proficiency'}</Text></View></View>{index<skills.length-1&&<View style={{height:scale}}><View style={{width:329,height:1,transformOrigin:'top left',transform:[{scaleX:333*scale/329},{scaleY:scale}]}}><LocalVector source={{uri:'/assets/skills-match/divider.svg'}} width={329} height={1}/></View></View>}</View>;
             })}</View>
+            <View style={s.breakdownHeader}><Text style={s.heading}>Available job matches</Text></View>
+            <Text style={s.small}>Job scores include skills, education, experience and career alignment.</Text>
+            {matchedJobs.map(job=><Pressable key={job.id} accessibilityRole="button" onPress={()=>{model.opportunityModel.setSelected(job);model.setJob(job.title);model.go('job');}} style={[s.card,{padding:14,marginTop:10}]}><Text style={s.heading}>{job.title}</Text><Text style={s.small}>{job.company} · {Math.round(job.match!)}% overall match</Text></Pressable>)}
+            {!matchedJobs.length && <Text style={s.small}>{model.opportunityModel?.loading ? 'Loading available jobs…' : model.opportunityModel?.error || 'No job matches are available yet.'}</Text>}
             <View style={{flex:1,minHeight:17*scale}}/>
             <Pressable accessibilityRole="button" accessibilityLabel="Find Learning Paths" onPress={
                 /** Opens the learning screen. */

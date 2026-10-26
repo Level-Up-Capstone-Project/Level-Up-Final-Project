@@ -48,6 +48,8 @@ public sealed class N8nAnalysisService(HttpClient http, IConfiguration config, I
         return SendAsync("KnowledgeCheck", new
         {
             requestId,
+            skillID,
+            skillName,
             skill = new {skillID, skillName},
             course = new
             {
@@ -86,7 +88,9 @@ public sealed class N8nAnalysisService(HttpClient http, IConfiguration config, I
     private async Task<JsonElement> SendRequestAsync(string workflow, HttpRequestMessage request, CancellationToken ct)
     {
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
-        timeout.CancelAfter(TimeSpan.FromSeconds(workflow is "Cv" or "Transcript" ? 600 : 120));
+        var defaultTimeout = workflow is "Cv" or "Transcript" ? 600 : 120;
+        var configuredTimeout = config.GetValue<int?>("N8n:TimeoutSeconds");
+        timeout.CancelAfter(TimeSpan.FromSeconds(configuredTimeout is > 0 and <= 3600 ? configuredTimeout.Value : defaultTimeout));
         try
         {
             using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token);

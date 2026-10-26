@@ -30,6 +30,8 @@ public class N8nLearningWorkflowTests
             Assert.Equal("secret", request.Headers.GetValues("X-LevelUp-API-Key").Single());
             using var body = JsonDocument.Parse(await request.Content!.ReadAsStringAsync(cancellationToken));
             var requestId = body.RootElement.GetProperty("requestId").GetGuid();
+            Assert.Equal(skillId, body.RootElement.GetProperty("skillID").GetGuid());
+            Assert.Equal("C#", body.RootElement.GetProperty("skillName").GetString());
             Assert.Equal(skillId, body.RootElement.GetProperty("skill").GetProperty("skillID").GetGuid());
             Assert.Equal(courseId, body.RootElement.GetProperty("course").GetProperty("resourceID").GetGuid());
             Assert.Equal("C# Fundamentals", body.RootElement.GetProperty("course").GetProperty("resourceName").GetString());
@@ -38,8 +40,7 @@ public class N8nLearningWorkflowTests
             Assert.Equal(2, body.RootElement.GetProperty("attemptNumber").GetInt32());
             return Json(new
             {
-                success = true, requestId, skillID = skillId, attemptNumber = 2,
-                assessment = new {questions = Questions()}
+                requestId, skillID = skillId, attemptNumber = 2, questions = Questions()
             });
         });
         var generator = new N8nAssessmentQuestionGenerator(new N8nAnalysisService(new HttpClient(handler),
@@ -48,8 +49,8 @@ public class N8nLearningWorkflowTests
         var questions = await generator.GenerateAsync(skillId, "C#", new N8nKnowledgeCheckCourse(
             courseId, "C# Fundamentals", "Microsoft Learn", "learn-csharp", "Course", "Learn C# basics."), 2, default);
 
-        Assert.Equal(3, questions.Count);
-        Assert.Equal(new[] {"A", "B", "C"}, questions[0].Choices);
+        Assert.Equal(5, questions.Count);
+        Assert.Equal(new[] {"A", "B", "C", "D"}, questions[0].Choices);
         Assert.Equal("B", questions[0].CorrectAnswer);
     }
 
@@ -61,14 +62,16 @@ public class N8nLearningWorkflowTests
         foreach (var questions in new object[]
         {
             Questions("Scenario"),
-            Questions(choices: new[] {"A", "A", "C"}),
-            Questions(answer: "D")
+            Questions(choices: new[] {"A", "A", "C", "D"}),
+            Questions(choices: new[] {"A", "B", "C"}),
+            Questions(answer: "E"),
+            Questions().Take(4).ToArray(),
+            Questions().Reverse().ToArray()
         })
         {
             using var json = JsonDocument.Parse(JsonSerializer.Serialize(new
             {
-                success = true, requestId, skillID = skillId, attemptNumber = 1,
-                assessment = new {questions}
+                requestId, skillID = skillId, attemptNumber = 1, questions
             }));
             Assert.Throws<N8nAnalysisException>(() =>
                 N8nAssessmentQuestionGenerator.Validate(json.RootElement, requestId, skillId, 1));
@@ -91,14 +94,37 @@ public class N8nLearningWorkflowTests
                     REQUESTID = requestId,
                     SKILLID = skillId,
                     ATTEMPTNUMBER = 1,
-                    ASSESSMENT = new {QUESTIONS = Questions()}
+                    QUESTIONS = Questions()
                 }
             }
         }));
 
         var questions = N8nAssessmentQuestionGenerator.Validate(json.RootElement, requestId, skillId, 1);
 
-        Assert.Equal(3, questions.Count);
+        Assert.Equal(5, questions.Count);
+    }
+
+    [Fact]
+    public void RoadmapValidatesAndDeduplicatesOptionalResources()
+    {
+        var requestId = Guid.NewGuid();
+        var careerId = Guid.NewGuid();
+        var skill = new N8nRoadmapSkill(Guid.NewGuid(), "HTML", "Web", 5, true, "Missing");
+        object Response(string url) => new
+        {
+            success = true, requestId, careerID = careerId,
+            roadmap = new
+            {
+                title = "Web", items = new[] { new { skillID = skill.SkillID, title = "Learn HTML", description = "Practice", priority = "high" } },
+                learningResources = Enumerable.Range(0, 2).Select(_ => new { provider = "freeCodeCamp", courseId = "html", title = "HTML", url, matchedSkills = new[] { "HTML" }, accessType = "free" }).ToArray()
+            }
+        };
+        using var valid = JsonDocument.Parse(JsonSerializer.Serialize(Response("https://www.freecodecamp.org/learn/")));
+        var roadmap = N8nRoadmapGenerator.Validate(valid.RootElement, requestId, careerId, new[] { skill });
+        Assert.Single(roadmap.LearningResources!);
+        Assert.Equal("Learn HTML", roadmap.Items[0].Title);
+        using var invalid = JsonDocument.Parse(JsonSerializer.Serialize(Response("javascript:alert(1)")));
+        Assert.Throws<N8nAnalysisException>(() => N8nRoadmapGenerator.Validate(invalid.RootElement, requestId, careerId, new[] { skill }));
     }
 
     [Fact]
@@ -333,9 +359,9 @@ public class N8nLearningWorkflowTests
     }
 
     private static object[] Questions(string type = "MultipleChoice", string[]? choices = null, string answer = "B") =>
-        Enumerable.Range(1, 3).Select(index => (object)new
+        Enumerable.Range(1, 5).Select(index => (object)new
         {
-            questionType = type, questionText = $"Question {index}", choices = choices ?? new[] {"A", "B", "C"}, correctAnswer = answer
+            questionOrder = index, questionType = type, questionText = $"Question {index}", choices = choices ?? new[] {"A", "B", "C", "D"}, correctAnswer = answer, markingGuidance = "Choose the best answer."
         }).ToArray();
 
     private static object Resource(string url, string? providerResourceID = "course") => new

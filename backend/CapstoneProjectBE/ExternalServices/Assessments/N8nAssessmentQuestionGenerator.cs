@@ -31,20 +31,21 @@ public sealed class N8nAssessmentQuestionGenerator(N8nAnalysisService workflow)
             return text;
         }
         root = N8nResponseParser.Unwrap(root);
-        if (root.ValueKind != JsonValueKind.Object || !N8nResponseParser.TryGetProperty(root, "success", out var success) || success.ValueKind != JsonValueKind.True ||
+        if (root.ValueKind != JsonValueKind.Object ||
             !Guid.TryParse(Text(root, "requestId", 36), out var returnedRequest) || returnedRequest != requestId ||
             !Guid.TryParse(Text(root, "skillID", 36), out var returnedSkill) || returnedSkill != skillId ||
             !N8nResponseParser.TryGetProperty(root, "attemptNumber", out var attempt) || attempt.ValueKind != JsonValueKind.Number || !attempt.TryGetInt32(out var number) || number != attemptNumber ||
-            !N8nResponseParser.TryGetProperty(root, "assessment", out var assessment) || assessment.ValueKind != JsonValueKind.Object ||
-            !N8nResponseParser.TryGetProperty(assessment, "questions", out var questions) || questions.ValueKind != JsonValueKind.Array || questions.GetArrayLength() is < 3 or > 10)
+            !N8nResponseParser.TryGetProperty(root, "questions", out var questions) || questions.ValueKind != JsonValueKind.Array || questions.GetArrayLength() != 5)
             throw Invalid();
         var result = new List<AssessmentQuestionSeed>();
         foreach (var question in questions.EnumerateArray())
         {
             if (question.ValueKind != JsonValueKind.Object) throw Invalid();
             var type = Text(question, "questionType", 30);
-            if (type != "MultipleChoice" || !N8nResponseParser.TryGetProperty(question, "choices", out var choicesElement) ||
-                choicesElement.ValueKind != JsonValueKind.Array || choicesElement.GetArrayLength() is < 3 or > 6)
+            if (type != "MultipleChoice" || !N8nResponseParser.TryGetProperty(question, "questionOrder", out var order) ||
+                order.ValueKind != JsonValueKind.Number || !order.TryGetInt32(out var questionOrder) || questionOrder != result.Count + 1 ||
+                !N8nResponseParser.TryGetProperty(question, "choices", out var choicesElement) ||
+                choicesElement.ValueKind != JsonValueKind.Array || choicesElement.GetArrayLength() != 4)
                 throw Invalid();
             var choices = choicesElement.EnumerateArray().Select(choice =>
             {
@@ -55,6 +56,7 @@ public sealed class N8nAssessmentQuestionGenerator(N8nAnalysisService workflow)
             }).ToArray();
             if (choices.Distinct(StringComparer.OrdinalIgnoreCase).Count() != choices.Length) throw Invalid();
             var answer = Text(question, "correctAnswer", 500);
+            _ = Text(question, "markingGuidance", 2000);
             var canonicalAnswer = choices.SingleOrDefault(choice => string.Equals(choice, answer, StringComparison.OrdinalIgnoreCase));
             if (canonicalAnswer is null) throw Invalid();
             result.Add(new(Text(question, "questionText", 2000), choices, canonicalAnswer));
