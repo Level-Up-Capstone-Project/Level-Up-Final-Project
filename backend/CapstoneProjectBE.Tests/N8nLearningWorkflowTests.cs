@@ -36,6 +36,7 @@ public class N8nLearningWorkflowTests
             Assert.Equal(courseId, body.RootElement.GetProperty("course").GetProperty("resourceID").GetGuid());
             Assert.Equal("C# Fundamentals", body.RootElement.GetProperty("course").GetProperty("resourceName").GetString());
             Assert.Equal("Microsoft Learn", body.RootElement.GetProperty("course").GetProperty("provider").GetString());
+            Assert.Equal("learn-csharp", body.RootElement.GetProperty("course").GetProperty("providerResourceID").GetString());
             Assert.Equal(2, body.RootElement.GetProperty("attemptNumber").GetInt32());
             return Json(new
             {
@@ -46,7 +47,7 @@ public class N8nLearningWorkflowTests
             Configuration("KnowledgeCheck", "https://example.com/webhook/knowledge-check-generate")));
 
         var questions = await generator.GenerateAsync(skillId, "C#", new N8nKnowledgeCheckCourse(
-            courseId, "C# Fundamentals", "Microsoft Learn", "Course", "Learn C# basics."), 2, default);
+            courseId, "C# Fundamentals", "Microsoft Learn", "learn-csharp", "Course", "Learn C# basics."), 2, default);
 
         Assert.Equal(5, questions.Count);
         Assert.Equal(new[] {"A", "B", "C", "D"}, questions[0].Choices);
@@ -130,7 +131,7 @@ public class N8nLearningWorkflowTests
     public async Task RoadmapSendsEverySkillButAcceptsExactlyTheActionableSkills()
     {
         var careerId = Guid.NewGuid();
-        var missing = new N8nRoadmapSkill(Guid.NewGuid(), "C#", "Development", 5, true, "Missing");
+        var missing = new N8nRoadmapSkill(Guid.NewGuid(), "C#", "Development", 5, true, "Missing", 2);
         var partial = new N8nRoadmapSkill(Guid.NewGuid(), "SQL", "Data", 4, true, "Partial");
         var have = new N8nRoadmapSkill(Guid.NewGuid(), "Git", "Tools", 3, false, "Have");
         var skills = new[] {missing, partial, have};
@@ -139,6 +140,7 @@ public class N8nLearningWorkflowTests
             Assert.Equal("secret", request.Headers.GetValues("X-LevelUp-API-Key").Single());
             using var body = JsonDocument.Parse(await request.Content!.ReadAsStringAsync(cancellationToken));
             Assert.Equal(3, body.RootElement.GetProperty("skills").GetArrayLength());
+            Assert.Equal(2, body.RootElement.GetProperty("skills")[0].GetProperty("resourceSlots").GetInt32());
             var requestId = body.RootElement.GetProperty("requestId").GetGuid();
             return Json(new
             {
@@ -146,10 +148,31 @@ public class N8nLearningWorkflowTests
                 roadmap = new
                 {
                     title = "Developer route",
-                    items = new[]
+                    items = new object[]
                     {
-                        new {skillID = missing.SkillID, title = "Learn C#", description = "Build a service.", priority = "high"},
-                        new {skillID = partial.SkillID, title = "Practise SQL", description = "Query a database.", priority = "medium"}
+                        new
+                        {
+                            skillID = missing.SkillID,
+                            title = "Learn C#",
+                            description = "Build a service.",
+                            priority = "high",
+                            resources = new[]
+                            {
+                                new
+                                {
+                                    providerResourceID = "get-started-csharp",
+                                    resourceName = "Get started with C#",
+                                    resourceType = "Learning Path",
+                                    url = "https://learn.microsoft.com/en-us/training/paths/get-started-c-sharp-part-1/#overview",
+                                    provider = "Microsoft Learn",
+                                    difficultyLevel = "Beginner",
+                                    costType = "Free",
+                                    estDuration = "4 hours",
+                                    description = "Learn C# syntax and build small programs."
+                                }
+                            }
+                        },
+                        new {skillID = partial.SkillID, title = "Practise SQL", description = "Query a database.", priority = "medium", resources = Array.Empty<object>()}
                     }
                 }
             });
@@ -161,6 +184,9 @@ public class N8nLearningWorkflowTests
 
         Assert.Equal("Developer route", roadmap.Title);
         Assert.Equal(new[] {missing.SkillID, partial.SkillID}, roadmap.Items.Select(item => item.SkillID));
+        GeneratedLearningResource resource = Assert.Single(roadmap.Items[0].Resources);
+        Assert.Equal("get-started-csharp", resource.ProviderResourceID);
+        Assert.Equal("https://learn.microsoft.com/en-us/training/paths/get-started-c-sharp-part-1", resource.CanonicalUrl);
     }
 
     [Fact]
@@ -300,11 +326,56 @@ public class N8nLearningWorkflowTests
         }
     }
 
+    [Fact]
+    public void RoadmapRejectsUnsafeOrExcessDiscoveredResources()
+    {
+        var requestId = Guid.NewGuid();
+        var careerId = Guid.NewGuid();
+        var skill = new N8nRoadmapSkill(Guid.NewGuid(), "C#", null, 5, true, "Missing", 1);
+        foreach (object[] resources in new[]
+        {
+            new[] { Resource("http://example.com/course") },
+            new[] { Resource("https://example.com/course-1", "one"), Resource("https://example.com/course-2", "two") }
+        })
+        {
+            using var json = JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                success = true,
+                requestId,
+                careerID = careerId,
+                roadmap = new
+                {
+                    title = "Route",
+                    items = new[]
+                    {
+                        new { skillID = skill.SkillID, title = "Learn C#", description = "Description", priority = "high", resources }
+                    }
+                }
+            }));
+
+            Assert.Throws<N8nAnalysisException>(() =>
+                N8nRoadmapGenerator.Validate(json.RootElement, requestId, careerId, new[] { skill }));
+        }
+    }
+
     private static object[] Questions(string type = "MultipleChoice", string[]? choices = null, string answer = "B") =>
         Enumerable.Range(1, 5).Select(index => (object)new
         {
             questionOrder = index, questionType = type, questionText = $"Question {index}", choices = choices ?? new[] {"A", "B", "C", "D"}, correctAnswer = answer, markingGuidance = "Choose the best answer."
         }).ToArray();
+
+    private static object Resource(string url, string? providerResourceID = "course") => new
+    {
+        providerResourceID,
+        resourceName = "C# course",
+        resourceType = "Course",
+        url,
+        provider = "Example Learning",
+        difficultyLevel = "Beginner",
+        costType = "Free",
+        estDuration = "2 hours",
+        description = "Learn the foundations of C#."
+    };
 
     private static HttpResponseMessage Json(object value) => new(HttpStatusCode.OK)
     {

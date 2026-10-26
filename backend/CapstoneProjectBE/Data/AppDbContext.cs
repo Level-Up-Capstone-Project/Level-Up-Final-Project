@@ -282,7 +282,12 @@ namespace CapstoneProjectBE.Data
 
             modelBuilder.Entity<LearningResource>(entity =>
             {
-                entity.ToTable("learning_resources");
+                entity.ToTable("learning_resources", table =>
+                {
+                    table.HasCheckConstraint(
+                        "learning_resources_provider_identity_check",
+                        "provider_resource_id IS NULL OR provider_key IS NOT NULL");
+                });
 
                 entity.HasKey(resource => resource.ResourceID);
 
@@ -306,8 +311,21 @@ namespace CapstoneProjectBE.Data
                 .HasMaxLength(500)
                 .IsRequired();
 
+                entity.Property(resource => resource.CanonicalUrl)
+                .HasColumnName("canonical_url")
+                .HasMaxLength(500)
+                .IsRequired();
+
                 entity.Property(resource => resource.Provider)
                 .HasColumnName("provider");
+
+                entity.Property(resource => resource.ProviderKey)
+                .HasColumnName("provider_key")
+                .HasMaxLength(100);
+
+                entity.Property(resource => resource.ProviderResourceID)
+                .HasColumnName("provider_resource_id")
+                .HasMaxLength(200);
 
                 entity.Property(resource => resource.DifficultyLevel)
                 .HasColumnName("difficulty_level");
@@ -328,6 +346,20 @@ namespace CapstoneProjectBE.Data
                 .HasColumnName("is_active");
 
                 entity.HasIndex(resource => resource.SkillID);
+
+                entity.HasIndex(resource => new { resource.SkillID, resource.CanonicalUrl })
+                .IsUnique()
+                .HasDatabaseName("learning_resources_skill_canonical_url_key");
+
+                entity.HasIndex(resource => new
+                {
+                    resource.SkillID,
+                    resource.ProviderKey,
+                    resource.ProviderResourceID
+                })
+                .IsUnique()
+                .HasFilter("provider_key IS NOT NULL AND provider_resource_id IS NOT NULL")
+                .HasDatabaseName("learning_resources_skill_provider_resource_key");
 
                 entity.HasOne(resource => resource.Skill)
                 .WithMany()

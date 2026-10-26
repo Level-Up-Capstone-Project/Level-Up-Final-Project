@@ -16,12 +16,32 @@
           "type": "array", "maxItems": 100,
           "items": {
             "type": "object", "additionalProperties": false,
-            "required": ["skillID", "title", "description", "priority"],
+            "required": ["skillID", "title", "description", "priority", "resources"],
             "properties": {
               "skillID": {"type": "string", "format": "uuid"},
               "title": {"type": "string", "minLength": 1, "maxLength": 150},
               "description": {"type": "string", "minLength": 1, "maxLength": 2000},
-              "priority": {"enum": ["high", "medium", "low"]}
+              "priority": {"enum": ["high", "medium", "low"]},
+              "resources": {
+                "type": "array",
+                "maxItems": 3,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["resourceName", "resourceType", "url", "provider", "difficultyLevel", "costType", "estDuration", "description"],
+                  "properties": {
+                    "providerResourceID": {"type": ["string", "null"], "minLength": 1, "maxLength": 200},
+                    "resourceName": {"type": "string", "minLength": 1, "maxLength": 200},
+                    "resourceType": {"enum": ["Course", "Learning Path", "Tutorial", "Guide", "Practice", "Project", "Video", "Book", "Documentation", "Article"]},
+                    "url": {"type": "string", "format": "uri", "pattern": "^https://", "maxLength": 500},
+                    "provider": {"type": "string", "minLength": 1, "maxLength": 100},
+                    "difficultyLevel": {"enum": ["Beginner", "Intermediate", "Advanced", "All Levels"]},
+                    "costType": {"enum": ["Free", "Freemium", "Paid"]},
+                    "estDuration": {"type": "string", "minLength": 1, "maxLength": 100},
+                    "description": {"type": "string", "minLength": 1, "maxLength": 2000}
+                  }
+                }
+              }
             }
           }
         }
