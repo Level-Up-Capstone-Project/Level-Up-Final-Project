@@ -26,6 +26,18 @@ dotnet user-secrets set "Supabase:SecretKey" "YOUR_SUPABASE_SECRET_KEY" --projec
 
 The JWT signing key must be valid Base64 and contain at least 32 bytes.
 
+## Database setup
+
+Create an empty PostgreSQL database and use its connection string in the setup above.
+
+Create the tables and starter data:
+
+```powershell
+dotnet run --project CapstoneProjectBE -- --migrate-database
+```
+
+The project migrations create the complete database structure and add the starter careers, skills, jobs and learning resources. No SQL files need to be imported manually.
+
 ## Run the API
 
 Trust the local HTTPS certificate if needed:
