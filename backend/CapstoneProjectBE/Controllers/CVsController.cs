@@ -158,6 +158,10 @@ namespace CapstoneProjectBE.Controllers
                     problem.Extensions["upstreamStatusCode"] = upstreamStatusCode;
                 return StatusCode(error.StatusCode, problem);
             }
+            catch (DocumentOwnershipException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+            }
             catch(InvalidDataException ex)
             {
                 return BadRequest(new
