@@ -123,6 +123,23 @@ public class N8nCvTests
     }
 
     [Fact]
+    public async Task RejectsCvWhoseHeaderDoesNotContainProfileNameBeforeCallingN8n()
+    {
+        var calls = 0;
+        var provider = new N8nCVAnalysisProvider(new N8nAnalysisService(new HttpClient(new Handler(_ =>
+        {
+            calls++;
+            throw new Exception("The workflow must not receive a rejected CV");
+        })), Config()), new StubTextExtractor("Other Person\nSoftware developer with SQL and API delivery experience."),
+            new TextCVAnalysisProvider());
+        var request = Request() with { Owner = new DocumentOwner("signed.in@example.com", "Signed", "In") };
+
+        await Assert.ThrowsAsync<DocumentOwnershipException>(() => provider.AnalyseAsync(request, default));
+
+        Assert.Equal(0, calls);
+    }
+
+    [Fact]
     public async Task UsesTextFallbackWhenN8nReturnsAnError()
     {
         var request = Request();

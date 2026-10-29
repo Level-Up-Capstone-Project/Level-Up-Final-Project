@@ -12,27 +12,28 @@ public static partial class DocumentOwnershipVerifier
     {
         if (owner is null || string.IsNullOrWhiteSpace(documentText)) return;
 
+        if (!HeaderContainsProfileName(documentText, owner))
+            throw new DocumentOwnershipException(documentType);
+
         var email = FindDocumentEmail(documentText);
         if (!string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(owner.Email) &&
             !string.Equals(email, owner.Email.Trim(), StringComparison.OrdinalIgnoreCase))
             throw new DocumentOwnershipException(documentType);
 
-        var labelledName = LabelledName().Match(documentText);
-        if (labelledName.Success && !NameMatchesOwner(labelledName.Groups["name"].Value, owner))
-            throw new DocumentOwnershipException(documentType);
     }
 
-    private static bool NameMatchesOwner(string documentName, DocumentOwner owner)
+    private static bool HeaderContainsProfileName(string documentText, DocumentOwner owner)
     {
-        var firstName = Normalize(owner.FirstName);
-        var lastName = Normalize(owner.LastName);
-        var name = Normalize(documentName);
-        var nameWords = documentName.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+        var expectedNameTokens = NameToken().Matches($"{owner.FirstName} {owner.LastName}")
+            .Select(match => Normalize(match.Value)).Where(token => token.Length > 1).Distinct().ToArray();
+        if (expectedNameTokens.Length < 2) return false;
 
-        // A one-word or abbreviated name is not reliable enough to reject a document.
-        if (name.Length == 0 || nameWords.Length < 2 || (firstName.Length == 0 && lastName.Length == 0)) return true;
-        return (firstName.Length == 0 || name.Contains(firstName, StringComparison.Ordinal)) &&
-               (lastName.Length == 0 || name.Contains(lastName, StringComparison.Ordinal));
+        // Identity blocks are expected at the top of both CVs and academic transcripts.
+        // Restricting this to the header prevents a reference or lecturer later in the document
+        // from being treated as the owner.
+        var header = documentText[..Math.Min(documentText.Length, 6000)];
+        var headerTokens = NameToken().Matches(header).Select(match => Normalize(match.Value)).ToHashSet();
+        return expectedNameTokens.All(headerTokens.Contains);
     }
 
     private static string Normalize(string? value) => new((value ?? string.Empty)
@@ -59,8 +60,8 @@ public static partial class DocumentOwnershipVerifier
     [GeneratedRegex(@"^(?<email>[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex BareEmail();
 
-    [GeneratedRegex(@"(?im)^\s*(?:full\s+name|student\s+name|candidate\s+name|name)\s*[:#-]\s*(?<name>[^\r\n]+?)\s*$", RegexOptions.CultureInvariant)]
-    private static partial Regex LabelledName();
+    [GeneratedRegex(@"[\p{L}\p{N}]+", RegexOptions.CultureInvariant)]
+    private static partial Regex NameToken();
 }
 
 /// <summary>Trusted account identity used only for a local document ownership check.</summary>
