@@ -113,7 +113,7 @@ public class TranscriptControllerTests
     private sealed class FailedWorkflow : ITranscriptAnalysisProvider
     {
         public Task<TranscriptInsights> AnalyseAsync(string? careerName, string fileName, string contentType, byte[] document,
-            CancellationToken ct, IReadOnlyList<string>? knownSkills = null) =>
+            CancellationToken ct, IReadOnlyList<string>? knownSkills = null, DocumentOwner? owner = null) =>
             throw new N8nAnalysisException("Workflow unavailable");
     }
 
@@ -123,7 +123,7 @@ public class TranscriptControllerTests
     private sealed class Workflow : ITranscriptAnalysisProvider
     {
         public Task<TranscriptInsights> AnalyseAsync(string? careerName, string fileName, string contentType, byte[] document,
-            CancellationToken ct, IReadOnlyList<string>? knownSkills = null)
+            CancellationToken ct, IReadOnlyList<string>? knownSkills = null, DocumentOwner? owner = null)
         {
             Assert.Equal("transcript.pdf", fileName);
             Assert.Equal("application/pdf", contentType);
