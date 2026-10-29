@@ -1,4 +1,4 @@
-<img width="1224" height="1371" alt="WhatsApp Image 2026-10-29 at 7 19 46 PM" src="https://github.com/user-attachments/assets/23f9692c-a9e1-40d9-a962-d216108c1884" />
+<img width="400" height="448" alt="WhatsApp Image 2026-10-29 at 7 19 46 PM" src="https://github.com/user-attachments/assets/23f9692c-a9e1-40d9-a962-d216108c1884" />
 
 
 MIRA Chatbot — Functional, Security and Recovery Testing Summary
