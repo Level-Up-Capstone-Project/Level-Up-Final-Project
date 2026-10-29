@@ -1,4 +1,4 @@
-This folder contains the evidence for all tests run along with a README file for each category of tests in a summary format as a support. These README files is not our actual test outcomes, this is only for reference and should not be used for marking, this is the master prompt used to summarize for context only. We have an official Excel File with our tests, the executions and the outcomes that must be used for marking. 
+**This folder contains the evidence for all tests run along with a README file for each category of tests in a summary format as a support. These README files is not our actual test outcomes, this is only for reference and should not be used for marking, this is the master prompt used to summarize for context only. We have an official Excel File with our tests, the executions and the outcomes that must be used for marking. **
 
 MASTER PROMPT — SOFTWARE TEST EXECUTION SUMMARY
 
