@@ -1,6 +1,7 @@
 /** Runs an analysis source and coordinates progress, cancellation and errors. */
 import { useCallback, useEffect, useRef, useState, type Dispatch } from 'react';
 import type { AnalysisEvent } from './analysisState';
+import { ApiError } from '../api/client';
 
 export type AnalysisDocument = { uri: string; name: string; mimeType?: string; size?: number };
 export type AnalysisSource = (request: {
@@ -9,6 +10,13 @@ export type AnalysisSource = (request: {
     // Real adapters report server progress here and resolve only on success.
     onProgress: (percent: number) => void;
 }) => Promise<void>;
+
+/** Turns the protected-document response into a clear, actionable user message. */
+function analysisErrorMessage(error: unknown): string {
+    if (error instanceof ApiError && error.status === 403)
+        return 'Name mismatch: this document must show the same first name and surname as your Level Up profile. Update your profile to match the name on your ID, CV or institution record, then try again.';
+    return error instanceof Error ? error.message : 'Analysis could not finish. Try again.';
+}
 
 /** Runs an analysis source and coordinates progress, cancellation and errors. */
 export default function useAnalysisRunner(document: AnalysisDocument | null, dispatch: Dispatch<AnalysisEvent>, source?: AnalysisSource, enabled=true) {
@@ -54,7 +62,7 @@ export default function useAnalysisRunner(document: AnalysisDocument | null, dis
             } });
             if (active()) dispatch({ type: 'progress', documentUri: document.uri, percent: 100 });
         } catch (error) {
-            if (active()) dispatch({ type: 'failed', documentUri: document.uri, error: error instanceof Error ? error.message : 'Analysis could not finish. Try again.' });
+            if (active()) dispatch({ type: 'failed', documentUri: document.uri, error: analysisErrorMessage(error) });
         } finally {
             if (current.current?.controller === controller) current.current = null;
         }
