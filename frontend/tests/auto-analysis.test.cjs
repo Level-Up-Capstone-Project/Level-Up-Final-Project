@@ -70,4 +70,18 @@ test('automatic document analysis', async t => {
         assert.equal(calls, 2);
         await act(async () => root.unmount());
     });
+    await t.test('explains a document ownership rejection and does not retry automatically', async () => {
+        let calls = 0;
+        const events = [];
+        const props = {document: first, dispatch: event => events.push(event), enabled: true, source: async () => {
+            calls++; throw Object.assign(new Error('Forbidden'), {status: 403});
+        }};
+        let root;
+        await act(async () => {root = renderer.create(component(props));});
+        await act(pause);
+        assert.equal(calls, 1);
+        assert.equal(events.find(event => event.type === 'failed')?.error,
+            'Name mismatch: this document must show the same first name and surname as your Level Up profile. Update your profile to match the name on your ID, CV or institution record, then try again.');
+        await act(async () => root.unmount());
+    });
 });

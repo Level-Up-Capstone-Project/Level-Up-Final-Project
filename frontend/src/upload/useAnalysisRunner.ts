@@ -1,7 +1,6 @@
 /** Runs an analysis source and coordinates progress, cancellation and errors. */
 import { useCallback, useEffect, useRef, useState, type Dispatch } from 'react';
 import type { AnalysisEvent } from './analysisState';
-import { ApiError } from '../api/client';
 
 export type AnalysisDocument = { uri: string; name: string; mimeType?: string; size?: number };
 export type AnalysisSource = (request: {
@@ -13,7 +12,8 @@ export type AnalysisSource = (request: {
 
 /** Turns the protected-document response into a clear, actionable user message. */
 function analysisErrorMessage(error: unknown): string {
-    if (error instanceof ApiError && error.status === 403)
+    if (typeof error === 'object' && error !== null && 'status' in error &&
+        (error as {status?: unknown}).status === 403)
         return 'Name mismatch: this document must show the same first name and surname as your Level Up profile. Update your profile to match the name on your ID, CV or institution record, then try again.';
     return error instanceof Error ? error.message : 'Analysis could not finish. Try again.';
 }
