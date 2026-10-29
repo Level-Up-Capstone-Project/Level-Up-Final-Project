@@ -21,6 +21,7 @@ public sealed class N8nCVAnalysisProvider(
         var text = await extractor.ExtractTextAsync(request.Document, request.ContentType, ct);
         if (text.Count(char.IsLetterOrDigit) < 50)
             throw new InvalidDataException("The CV does not contain enough readable text.");
+        DocumentOwnershipVerifier.EnsureMatches(request.Owner, text, "CV");
         try
         {
             var json = await workflow.AnalyseCvAsync(request.RequestId, request.CVID, request.CareerID, request.CareerName,

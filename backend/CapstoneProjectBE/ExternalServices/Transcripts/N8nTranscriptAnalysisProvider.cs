@@ -13,13 +13,15 @@ public sealed class N8nTranscriptAnalysisProvider(CapstoneProjectBE.Services.N8n
     public void EnsureConfigured() => workflow.EnsureConfigured("Transcript");
 
     public async Task<TranscriptInsights> AnalyseAsync(string? careerName, string fileName, string contentType,
-        byte[] document, CancellationToken ct, IReadOnlyList<string>? knownSkills = null)
+        byte[] document, CancellationToken ct, IReadOnlyList<string>? knownSkills = null,
+        DocumentOwner? owner = null)
     {
         knownSkills ??= [];
         var safeFileName = PersonalInformationRedactor.RedactFileName(fileName);
         var text = await extractor.ExtractTextAsync(document, contentType, ct);
         if (text.Count(char.IsLetterOrDigit) < 50)
             throw new InvalidDataException("The transcript does not contain enough readable text.");
+        DocumentOwnershipVerifier.EnsureMatches(owner, text, "transcript");
         var json = await workflow.AnalyseTranscriptAsync(careerName, safeFileName, PersonalInformationRedactor.Redact(text), ct);
         var result = Validate(json);
         var localSkills = knownSkills.Where(skill => SkillNameMatcher.TextContains(text, skill))
