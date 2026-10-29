@@ -73,6 +73,7 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<ICareerService, CareerService>();
 builder.Services.AddScoped<ILearningResourceService, LearningResourceService>();
 builder.Services.AddScoped<IRoadmapService, RoadmapService>();
+builder.Services.AddScoped<LearningResourceDiscoveryService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IUserSkillService, UserSkillService>();

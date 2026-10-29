@@ -49,6 +49,7 @@ The `knowledge-check-generate` webhook receives a backend-generated request ID, 
     "resourceID": "uuid",
     "resourceName": "C# Fundamentals",
     "provider": "Microsoft Learn",
+    "providerResourceID": "learn-csharp-part-1",
     "resourceType": "Course",
     "description": "..."
   },
@@ -62,7 +63,7 @@ The backend generates questions before acquiring its short database allocation l
 
 ## Roadmaps
 
-The `roadmap-generate` webhook receives the target career and all its catalogue skills with `Missing`, `Partial`, or `Have` status. Its response must match `roadmap-response.schema.json` and include every `Missing` or `Partial` skill exactly once. It must not include a `Have` skill, invent skill IDs, or repeat a step title. Roadmap and step titles are limited to 150 characters to match the database. The backend owns resource selection and persistence; n8n only orders and describes the requested steps. The backend accepts either the direct response object or the n8n Code-node item envelope (`[{ "statusCode": 200, "response": { ... } }]`). If the workflow is unavailable or its response fails validation, the backend creates a deterministic roadmap from the same trusted missing and partial skills rather than persisting untrusted identifiers.
+The `roadmap-generate` webhook receives the payload defined by `roadmap-request.schema.json`: the target career and all its catalogue skills with `Missing`, `Partial`, or `Have` status. Each skill also contains `resourceSlots` from zero to three and up to three `existingResources` that must not be recommended again. The backend sets the slot count to zero when enough active database resources already exist, so n8n only discovers resources needed to fill catalogue gaps. Its response must match `roadmap-response.schema.json` and include every `Missing` or `Partial` skill exactly once. It must not include a `Have` skill, invent skill IDs, repeat a step title, or return more resources than the supplied slot count. Roadmap and step titles are limited to 150 characters to match the database. Resource candidates require public HTTPS URLs and bounded metadata; a provider resource identifier should be returned when available. The backend validates, normalizes, deduplicates, and saves accepted candidates before linking up to three active resources to each roadmap step. Later users with the same weak skill reuse those database resources. The backend accepts either the direct response object or the n8n Code-node item envelope (`[{ "statusCode": 200, "response": { ... } }]`). If the workflow is unavailable or its response fails validation, the backend creates a deterministic roadmap from the same trusted missing and partial skills and uses any resources already stored in the database.
 
 ## MIRA chat
 

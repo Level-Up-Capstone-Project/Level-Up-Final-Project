@@ -18,7 +18,8 @@ public sealed class TextRoadmapGenerator
             Limit(skill.Status == "Missing"
                 ? $"Build a foundation in {skill.SkillName} by completing the recommended learning resources and applying the skill in a practical exercise."
                 : $"Deepen your {skill.SkillName} capability through focused practice and the recommended learning resources.", 2000),
-            Priority(skill))).ToList();
+            Priority(skill),
+            Array.Empty<GeneratedLearningResource>())).ToList();
         return new GeneratedRoadmap(Limit($"{careerName} Learning Roadmap", 150), items);
     }
 

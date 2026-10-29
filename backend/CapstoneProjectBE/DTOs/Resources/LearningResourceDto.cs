@@ -17,6 +17,8 @@ namespace CapstoneProjectBE.DTOs.Resources
 
         public string Provider { get; set; } = string.Empty;
 
+        public string? ProviderResourceID { get; set; }
+
 
         public string DifficultyLevel { get; set; } = string.Empty;
 

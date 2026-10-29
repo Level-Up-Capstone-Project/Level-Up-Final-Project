@@ -18,7 +18,13 @@ namespace CapstoneProjectBE.Models
 
         public string Url { get; set; } = string.Empty;
 
+        public string CanonicalUrl { get; set; } = string.Empty;
+
         public string Provider { get; set; } = string.Empty;
+
+        public string? ProviderKey { get; set; }
+
+        public string? ProviderResourceID { get; set; }
 
         public string DifficultyLevel { get; set; } = string.Empty;
 
