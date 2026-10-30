@@ -185,7 +185,15 @@ export default function useAuthModel({ screen, navigate, onAuthenticated, onPass
             setPassword('');
             onAuthenticated();
         } catch (error) {
-            setMessage(error instanceof ApiError ? error.message : 'Could not reach the account service. Make sure the backend is running.');
+            if (error instanceof ApiError && error.status === 403) {
+                updateAccount({...account, email, password: '', token: undefined});
+                setPassword('');
+                setOtp(['', '', '', '', '', '']);
+                setResendSeconds(0);
+                navigate('otp');
+            } else {
+                setMessage(error instanceof ApiError ? error.message : 'Could not reach the account service. Make sure the backend is running.');
+            }
         } finally { setSubmitting(false); }
     };
     const resendVerification = async () => {
@@ -216,8 +224,19 @@ export default function useAuthModel({ screen, navigate, onAuthenticated, onPass
         }
 
         if (passwordRecovery) {
-            setMessage('');
-            navigate('reset');
+            try {
+                setSubmitting(true);
+                setMessage('');
+                await apiRequest<{message:string}>('/api/auth/password-reset/verify', {
+                    method:'POST',
+                    body:{email:recoveryContact.trim().toLowerCase(), verificationCode},
+                });
+                navigate('reset');
+            } catch (error) {
+                setMessage(error instanceof ApiError ? error.message : 'Could not verify the reset code. Please try again.');
+            } finally {
+                setSubmitting(false);
+            }
             return;
         }
 

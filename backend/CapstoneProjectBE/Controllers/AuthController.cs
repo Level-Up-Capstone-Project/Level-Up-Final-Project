@@ -51,6 +51,16 @@ namespace CapstoneProjectBE.Controllers
         }
 
         [EnableRateLimiting("password-recovery")]
+        [HttpPost("password-reset/verify")]
+        public async Task<IActionResult> VerifyPasswordResetCode([FromBody] VerifyPasswordResetCodeRequest request, CancellationToken cancellationToken)
+        {
+            bool verified = await _authService.VerifyPasswordResetCodeAsync(request, cancellationToken);
+            return verified
+                ? Ok(new {message = "The password reset code is valid."})
+                : BadRequest(new {message = "The password reset code is invalid or expired."});
+        }
+
+        [EnableRateLimiting("password-recovery")]
         [HttpPost("password-reset/complete")]
         public async Task<IActionResult> CompletePasswordReset([FromBody] CompletePasswordResetRequest request, CancellationToken cancellationToken)
         {
@@ -93,16 +103,25 @@ namespace CapstoneProjectBE.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
         {
-            LoginResponse? response = await _authService.LoginAsync(request, cancellationToken);
+            LoginResult result = await _authService.LoginAsync(request, cancellationToken);
 
-            if(response is null)
+            if(result.Status == LoginStatus.VerificationRequired)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new
+                {
+                    code = "email_verification_required",
+                    message = "Email verification is required. Enter the code sent to your email."
+                });
+            }
+
+            if(result.Status == LoginStatus.InvalidCredentials || result.Response is null)
             {
                 return Unauthorized(new
                 {
                     message = "Invalid email or password."
                 });
             }
-            return Ok(response);
+            return Ok(result.Response);
         }
 
         [Authorize]

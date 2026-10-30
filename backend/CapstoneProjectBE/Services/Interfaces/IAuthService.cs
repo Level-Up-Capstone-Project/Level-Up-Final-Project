@@ -11,8 +11,9 @@ namespace CapstoneProjectBE.Services.Interfaces
         Task<VerifyEmailResponse?> VerifyEmailAsync(VerifyEmailRequest request, CancellationToken cancellationToken);
         Task ResendVerificationAsync(ResendVerificationRequest request, CancellationToken cancellationToken);
         Task RequestPasswordResetAsync(PasswordResetCodeRequest request, CancellationToken cancellationToken);
+        Task<bool> VerifyPasswordResetCodeAsync(VerifyPasswordResetCodeRequest request, CancellationToken cancellationToken);
         Task<bool> ResetPasswordAsync(CompletePasswordResetRequest request, CancellationToken cancellationToken);
-        Task<LoginResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken);
+        Task<LoginResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken);
         Task<AuthUserDto?> GetCurrentUserAsync(Guid userId, CancellationToken cancellationToken);
     }
 }
