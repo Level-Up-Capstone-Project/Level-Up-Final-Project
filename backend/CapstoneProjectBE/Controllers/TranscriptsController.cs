@@ -61,15 +61,20 @@ public class TranscriptsController(AppDbContext db, ITranscriptAnalysisProvider 
             await file.CopyToAsync(bytes, ct);
             if (progress is not null) await progress(25);
             if (progress is not null) await progress(65);
-            var careerName = await db.Users.AsNoTracking().Where(user => user.UserID == userId)
+            var userContext = await db.Users.AsNoTracking().Where(user => user.UserID == userId)
                 .Select(user => new
                 {
+                    Email = user.Email,
+                    FirstName = user.UserProfile == null ? null : user.UserProfile.FName,
+                    LastName = user.UserProfile == null ? null : user.UserProfile.LName,
                     CareerName = user.UserProfile == null || user.UserProfile.TargetCareer == null ? null : user.UserProfile.TargetCareer.CareerName,
-                }).Select(profile => profile.CareerName).SingleOrDefaultAsync(ct);
+                }).SingleOrDefaultAsync(ct);
+            var careerName = userContext?.CareerName;
             var safeFileName = Path.GetFileName(file.FileName.Replace('\\', '/'));
             var catalogue = await db.Skills.AsNoTracking().Select(skill => new {skill.SkillID, skill.SkillName}).ToListAsync(ct);
             var insights = await workflow.AnalyseAsync(careerName, safeFileName, "application/pdf", bytes.ToArray(), ct,
-                catalogue.Select(skill => skill.SkillName).ToList());
+                catalogue.Select(skill => skill.SkillName).ToList(),
+                new DocumentOwner(userContext?.Email, userContext?.FirstName, userContext?.LastName));
             if (progress is not null) await progress(85);
             var subjects = insights.Modules.Where(module => module.Mark.HasValue)
                 .Select(module => new TranscriptSubject(module.ModuleName, module.Mark!.Value)).ToArray();
@@ -89,6 +94,7 @@ public class TranscriptsController(AppDbContext db, ITranscriptAnalysisProvider 
             return Ok(result);
         }
         catch (N8nAnalysisException error) { return Problem(title: error.Message, statusCode: error.StatusCode); }
+        catch (DocumentOwnershipException error) { return StatusCode(StatusCodes.Status403Forbidden, new {message = error.Message}); }
         catch (InvalidDataException error) { return BadRequest(new {message = error.Message}); }
     }
 }

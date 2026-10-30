@@ -77,7 +77,7 @@ export default function MissionHubScreen({model}:{model:AppModel}) {
 
 const base=StyleSheet.create({
     safe:{flex:1,backgroundColor:'#000'},
-    canvas:{flex:1,width:'100%',maxWidth:480,alignSelf:'center',overflow:'hidden'},
+    canvas:{flex:1,width:'100%',alignSelf:'stretch',overflow:'hidden'},
     background:{position:'absolute',left:0,top:0,width:'100%',height:'100%'},
     backgroundShade:{...StyleSheet.absoluteFill,backgroundColor:'rgba(0,0,0,.56)'},
     upperContours:{position:'absolute',top:0,left:0,opacity:.42},

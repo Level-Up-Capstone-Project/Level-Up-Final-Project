@@ -7,7 +7,7 @@ export const colors = {
 };
 const styles = StyleSheet.create({
     flex: { flex: 1 }, safe: { flex: 1, backgroundColor: '#F4F1EA' },
-    canvas: { flexGrow: 1, width: '100%', maxWidth: 408.393, alignSelf: 'center', paddingBottom: 100 },
+    canvas: { flexGrow: 1, width: '100%', alignSelf: 'stretch', paddingBottom: 100 },
     body: { paddingHorizontal: 31.22 },
     statusBar: { height: 42, width: '100%' }, time: { position: 'absolute', left: 24, top: 12 },
     statusIcons: { position: 'absolute', right: 24, top: 12, flexDirection: 'row', gap: 3, alignItems: 'flex-start' },

@@ -65,7 +65,7 @@ export default function LegalDocument({ document,onBack,onRelated }: { document:
     </View></View>;
 }
 const s=StyleSheet.create({
-    safe:{flex:1,backgroundColor:'#000'},canvas:{flex:1,width:'100%',maxWidth:480,alignSelf:'center',overflow:'hidden'},
+    safe:{flex:1,backgroundColor:'#000'},canvas:{flex:1,width:'100%',alignSelf:'stretch',overflow:'hidden'},
     header:{flexDirection:'row',alignItems:'center',minHeight:44,marginLeft:-10},back:{minHeight:44,minWidth:38,alignItems:'center',justifyContent:'center'},title:{fontWeight:'700',color:'#fff',flex:1},
     kicker:{fontWeight:'700',color:'#d4af53'},description:{color:'#a6a6a4'},
     card:{flex:1,minHeight:100,borderWidth:1,borderColor:'#353e44',borderRadius:10,backgroundColor:'rgba(6,15,20,.85)',overflow:'hidden'},documentHeader:{flexDirection:'row',alignItems:'center'},docTitle:{fontSize:13,lineHeight:20,fontWeight:'700',color:'#fff'},date:{fontSize:12,lineHeight:18,color:'#a6a6a4',marginTop:6},

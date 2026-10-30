@@ -24,7 +24,7 @@ export default function DocumentUploadScreen({ model, kind }: { model: AppModel;
     const tasks = transcript ? transcriptTasks : cvTasks;
     const { width, height } = useWindowDimensions();
     const insets = useSafeAreaInsets();
-    const scale = Math.min(width, 480) / 408.393;
+    const scale = width / 408.393;
     const [choosing, setChoosing] = useState(false);
     const { error, go, goBack } = model;
     const document = transcript ? model.transcriptDocument : model.cvDocument;
@@ -57,11 +57,12 @@ export default function DocumentUploadScreen({ model, kind }: { model: AppModel;
     const runner = transcript ? model.transcriptRunner : model.cvRunner;
     const processing = analysis.status === 'processing';
     const progress = analysisProgress(analysis);
+    const ownershipMismatch = analysis.status === 'failed' && analysis.error?.startsWith('Name mismatch:') === true;
     /** Displays a bundled image in its upload-screen position. */
     const photo =  (source: ImageSourcePropType, left: number, top: number, w: number, h = w) => <Image accessible={false} source={source} resizeMode="cover" style={{ position: 'absolute', left, top, width: w, height: h }}/>;
     const fileSize = document?.size == null ? 'Size unavailable' : document.size < 1024 * 1024 ? `${Math.max(1, Math.round(document.size / 1024))} KB` : `${(document.size / (1024 * 1024)).toFixed(2)} MB`;
     // Keep the existing Continue action available after automatic processing succeeds.
-    const canContinue = !!document && (runner.connected ? analysis.status === 'completed' : ['ready', 'completed'].includes(analysis.status)) && !choosing;
+    const canContinue = ownershipMismatch || (!!document && (runner.connected ? analysis.status === 'completed' : ['ready', 'completed'].includes(analysis.status)) && !choosing);
     return <View style={styles.safe}>
         <ScrollView bounces={false} contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
             <View testID={transcript ? 'upload-transcript-screen' : 'upload-screen'} style={{ width: 408.393 * scale, height: Math.max(height, (885.372 + insets.bottom) * scale), overflow: 'hidden' }}>
@@ -119,9 +120,9 @@ export default function DocumentUploadScreen({ model, kind }: { model: AppModel;
                     {!!(error || analysis.error) && <Text accessibilityRole="alert" style={styles.error}>{error || analysis.error}</Text>}
                     <Pressable accessibilityRole="button" accessibilityState={{ disabled: !canContinue }} disabled={!canContinue} onPress={
                         /** Handles the on press for this component. */
-                         () => go(transcript ? 'analysis' : 'uploadTranscript')} style={
+                         () => ownershipMismatch ? go('profileSettings') : go(transcript ? 'analysis' : 'uploadTranscript')} style={
                         /** Returns the control styles for its current pressed state. */
-                         ({ pressed }) => [styles.continue, canContinue && pressed && { opacity: .8 }]}><Text style={styles.buttonText}>Continue</Text><OpportunityIcon name="arrow" size={24} color="#000"/></Pressable>
+                         ({ pressed }) => [styles.continue, canContinue && pressed && { opacity: .8 }]}><Text style={styles.buttonText}>{ownershipMismatch ? 'Update profile' : 'Continue'}</Text><OpportunityIcon name="arrow" size={24} color="#000"/></Pressable>
                 </View>
             </View>
         </ScrollView>

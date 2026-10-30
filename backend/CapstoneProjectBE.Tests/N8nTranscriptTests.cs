@@ -80,6 +80,24 @@ public class N8nTranscriptTests
     }
 
     [Fact]
+    public async Task RejectsAnotherUsersIdentifiedTranscriptBeforeCallingN8n()
+    {
+        var calls = 0;
+        var handler = new Handler((_, _) =>
+        {
+            calls++;
+            throw new Exception("The workflow must not receive a rejected transcript");
+        });
+        var provider = new N8nTranscriptAnalysisProvider(new N8nAnalysisService(new HttpClient(handler), Config()),
+            new StubTextExtractor("Student Name: Other Person\nEmail: other.person@example.com\nMathematics 82% Programming 91% Official academic record"));
+
+        await Assert.ThrowsAsync<DocumentOwnershipException>(() => provider.AnalyseAsync(null, "transcript.pdf", "application/pdf", Document,
+            default, owner: new DocumentOwner("signed.in@example.com", "Signed", "In")));
+
+        Assert.Equal(0, calls);
+    }
+
+    [Fact]
     public void RejectsMalformedOrExplicitlyFailedResponses()
     {
         foreach (var payload in new[]

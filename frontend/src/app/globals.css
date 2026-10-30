@@ -4,8 +4,8 @@
 @font-face{font-family:"Poppins";src:url("/assets/fonts/Poppins-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap;}
 @font-face{font-family:"PoppinsMedium";src:url("/assets/fonts/Poppins-Medium.ttf") format("truetype");font-weight:500;font-style:normal;font-display:swap;}
 @font-face{font-family:"PoppinsSemiBold";src:url("/assets/fonts/Poppins-SemiBold.ttf") format("truetype");font-weight:600;font-style:normal;font-display:swap;}
-html,body{margin:0;padding:0;min-height:100%;background:#000;color:#fff;}
+html,body,#__next{margin:0;padding:0;width:100%;min-width:0;min-height:100%;background:#000;color:#fff;}
 body{font-family:Inter,Arial,sans-serif;}
-#app-root{height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
+#app-root{width:100vw;max-width:none;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
 #app-root>div{flex:1;min-height:0;}
 *{box-sizing:border-box;}

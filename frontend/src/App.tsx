@@ -40,7 +40,7 @@ import MissionHubScreen from './screens/MissionHubScreen';
 function CareerApp() {
     const model = useAppModel();
     const { screen, account, setAccount, go, replace, auth, legalDocument, openLegal, closeLegal } = model;
-    const signedInLayout = (content: ReactNode) => !account.token ? content : <View style={{flex:1,backgroundColor:'#000'}}><View style={{flex:1,minHeight:0}}>{content}</View><View style={{width:'100%',maxWidth:480,alignSelf:'center'}}><BottomNavigation screen={screen} go={go} inline/></View></View>;
+    const signedInLayout = (content: ReactNode) => !account.token ? content : <View style={{flex:1,backgroundColor:'#000'}}><View style={{flex:1,minHeight:0}}>{content}</View><View style={{width:'100%',alignSelf:'stretch'}}><BottomNavigation screen={screen} go={go} inline/></View></View>;
     if(model.feedback){const views={login:LoginSuccessScreen,signedOut:SignedOutScreen,upload:UploadSuccessScreen,passwordReset:PasswordResetSuccessScreen,analysisComplete:AnalysisCompleteScreen,consentWithdrawn:ConsentWithdrawnScreen};const Feedback=views[model.feedback.kind];return signedInLayout(<Feedback onContinue={model.continueFeedback} message={model.feedback.message} nextScreen={model.feedback.next}/>);}
     const introductionScreens = { splash: SplashScreen, introAssessment: IntroAssessmentScreen, introGap: IntroGapScreen, introTraining: IntroTrainingScreen, introOpportunities: IntroOpportunitiesScreen };
     if (screen in introductionScreens) {

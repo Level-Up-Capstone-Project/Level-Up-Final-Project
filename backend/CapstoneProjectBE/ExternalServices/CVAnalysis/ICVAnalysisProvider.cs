@@ -1,4 +1,6 @@
-﻿namespace CapstoneProjectBE.ExternalServices.CVAnalysis
+﻿using CapstoneProjectBE.Services;
+
+namespace CapstoneProjectBE.ExternalServices.CVAnalysis
 {
     /// <summary>
     /// Defines the contract for the CVAnalysis Provider integration.
@@ -13,5 +15,6 @@
     /// Carries CVAnalysis Request values used by an external integration.
     /// </summary>
     public record CVAnalysisRequest(Guid RequestId, Guid CVID, Guid? CareerID, string? CareerName,
-        string FileName, string ContentType, byte[] Document, IReadOnlyList<CVSkillCandidate> KnownSkills);
+        string FileName, string ContentType, byte[] Document, IReadOnlyList<CVSkillCandidate> KnownSkills,
+        DocumentOwner? Owner = null);
 }

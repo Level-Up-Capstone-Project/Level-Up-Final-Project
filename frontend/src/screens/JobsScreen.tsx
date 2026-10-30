@@ -127,7 +127,7 @@ export default function JobsScreen({ model }: { model: AppModel }) {
     </View></View>;
 }
 const base = StyleSheet.create({
-    safe:{flex:1,backgroundColor:'#000'},canvas:{flex:1,width:'100%',maxWidth:480,alignSelf:'center',overflow:'hidden'},content:{paddingHorizontal:20,flexGrow:1},
+    safe:{flex:1,backgroundColor:'#000'},canvas:{flex:1,width:'100%',alignSelf:'stretch',overflow:'hidden'},content:{paddingHorizontal:20,flexGrow:1},
     header:{flexDirection:'row',alignItems:'center',gap:4,minHeight:44},iconButton:{minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center'},title:{flex:1,color:'#b8b8b8',fontSize:32,fontWeight:'700'},notice:{color:'#d4af53',fontSize:12,marginTop:10},
     search:{marginTop:32,minHeight:66,paddingLeft:18,paddingRight:2,borderRadius:10,borderWidth:1,borderColor:'#353e44',backgroundColor:'rgba(6,15,20,.85)',flexDirection:'row',alignItems:'center',gap:15},input:{flex:1,minWidth:0,fontFamily:'Inter',fontSize:13,color:'#fff',paddingVertical:16},
     tabs:{flexDirection:'row',flexWrap:'wrap',alignItems:'center',gap:16,marginTop:16,marginBottom:16},option:{minHeight:46,minWidth:96,paddingHorizontal:18,paddingVertical:10,borderWidth:1,borderColor:'#9d813b',borderRadius:10,backgroundColor:'#090e11',alignItems:'center',justifyContent:'center'},optionSelected:{backgroundColor:'#a38b3e',borderColor:'#a38b3e'},optionText:{color:'#aaa',fontSize:13},clear:{minHeight:44,justifyContent:'center'},gold:{color:'#d4af53',fontSize:13},

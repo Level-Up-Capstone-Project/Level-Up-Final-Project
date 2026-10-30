@@ -102,7 +102,7 @@ export default function ProfileSettingsScreen({model}: {model: AppModel}) {
 }
 
 const s = StyleSheet.create({
-    safe:{flex:1,backgroundColor:'#000'}, content:{width:'100%',maxWidth:480,alignSelf:'center',paddingHorizontal:24,flexGrow:1},
+    safe:{flex:1,backgroundColor:'#000'}, content:{width:'100%',alignSelf:'stretch',paddingHorizontal:24,flexGrow:1},
     copy:{fontSize:14,lineHeight:22,color:'#a6a6a4',marginBottom:20}, field:{marginBottom:18}, label:{color:'#fff',fontSize:14,marginBottom:8},
     input:{minHeight:52,borderWidth:1,borderColor:'#353e44',borderRadius:10,padding:14,backgroundColor:'#060f14',color:'#fff',fontSize:16},
     multiline:{minHeight:90,textAlignVertical:'top'}, focused:{borderColor:'#d4af53'}, option:{minHeight:48,borderWidth:1,borderColor:'#353e44',borderRadius:10,padding:14,marginTop:8,backgroundColor:'#060f14'},

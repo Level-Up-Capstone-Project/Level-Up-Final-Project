@@ -44,12 +44,16 @@ namespace CapstoneProjectBE.Services
             var target = await _context.Users.AsNoTracking().Where(user => user.UserID == userId)
                 .Select(user => new
                 {
+                    Email = user.Email,
+                    FirstName = user.UserProfile == null ? null : user.UserProfile.FName,
+                    LastName = user.UserProfile == null ? null : user.UserProfile.LName,
                     TargetCareerID = user.UserProfile == null ? null : user.UserProfile.TargetCareerID,
                     CareerName = user.UserProfile == null || user.UserProfile.TargetCareer == null ? null : user.UserProfile.TargetCareer.CareerName,
                 })
                 .SingleOrDefaultAsync(cancellationToken);
             CVAnalysisResult result = await _cvAnalysisProvider.AnalyseAsync(new CVAnalysisRequest(Guid.NewGuid(), cv.CVID,
-                target?.TargetCareerID, target?.CareerName, cv.FileName, cv.FileType, fileBytes, knownSkills), cancellationToken);
+                target?.TargetCareerID, target?.CareerName, cv.FileName, cv.FileType, fileBytes, knownSkills,
+                new DocumentOwner(target?.Email, target?.FirstName, target?.LastName)), cancellationToken);
             if (reportProgress is not null) await reportProgress(80);
             Guid analysisId = Guid.NewGuid();
             DateTime analysedAt = DateTime.UtcNow;

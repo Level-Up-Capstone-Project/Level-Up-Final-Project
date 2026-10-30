@@ -1,3 +1,5 @@
+using CapstoneProjectBE.Services;
+
 namespace CapstoneProjectBE.ExternalServices.Transcripts;
 
 /// <summary>
@@ -26,5 +28,6 @@ public interface ITranscriptAnalysisProvider
 {
     void EnsureConfigured() { }
     Task<TranscriptInsights> AnalyseAsync(string? careerName, string fileName, string contentType,
-        byte[] document, CancellationToken ct, IReadOnlyList<string>? knownSkills = null);
+        byte[] document, CancellationToken ct, IReadOnlyList<string>? knownSkills = null,
+        DocumentOwner? owner = null);
 }

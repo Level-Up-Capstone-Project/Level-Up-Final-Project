@@ -31,4 +31,4 @@ export default function LoaderScreen({ onComplete }: { onComplete: () => void })
         </View>
     </View>;
 }
-const styles=StyleSheet.create({safe:{flex:1,backgroundColor:'#000'},canvas:{flex:1,width:'100%',maxWidth:480,alignSelf:'center',overflow:'hidden',backgroundColor:'#000'}});
+const styles=StyleSheet.create({safe:{flex:1,backgroundColor:'#000'},canvas:{flex:1,width:'100%',alignSelf:'stretch',overflow:'hidden',backgroundColor:'#000'}});
