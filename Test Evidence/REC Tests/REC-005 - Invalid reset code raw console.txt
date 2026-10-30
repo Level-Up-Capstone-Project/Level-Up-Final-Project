@@ -1,0 +1,11 @@
+Command run on 2026-10-30:
+curl.exe -sS -i -X POST http://localhost/api/auth/password-reset/verify -H "Content-Type: application/json" --data-raw '{"email":"unknown@example.test","verificationCode":"12AB"}'
+
+Actual response:
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json; charset=utf-8
+Server: Kestrel
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"VerificationCode":["The field VerificationCode must match the regular expression '^[0-9]{6}$'."]},"traceId":"00-9c83a0d80d558ea0c968478588241a8a-1c32758824d6dab6-00"}
+
+Result: PASS AFTER FIX

@@ -1,0 +1,9 @@
+Command run on 2026-10-30:
+curl.exe -sS -o NUL -w "HTTP %{http_code}\ncontent_type=%{content_type}\ntime_total=%{time_total}s\n" http://localhost/api/careers
+
+Actual output:
+HTTP 200
+content_type=application/json; charset=utf-8
+time_total=0.535346s
+
+Result: PASS

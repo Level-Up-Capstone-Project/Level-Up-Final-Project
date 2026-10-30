@@ -1,0 +1,11 @@
+Command run on 2026-10-30:
+curl.exe -sS -i -X POST http://localhost/api/auth/login -H "Content-Type: application/json" --data-raw '{"email":"not-an-email","password":"CorrectLength1!"}'
+
+Actual response:
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json; charset=utf-8
+Server: Kestrel
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"Email":["The Email field is not a valid e-mail address."]},"traceId":"00-e85b0e045c0aa93751ffb89c4f2d8350-dc59d760f06e6f3b-00"}
+
+Result: PASS

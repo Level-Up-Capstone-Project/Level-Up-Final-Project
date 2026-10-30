@@ -1,0 +1,13 @@
+Device: Android Emulator Medium_Phone_API_35_2 (Android 15)
+Browser: Chrome 151.0.7922.169
+URL tested: http://10.0.2.2:3000
+
+Observed result:
+The host responded, but the emulator Chrome content area remained black.
+
+Relevant adb logcat evidence:
+W chromium: Child process died (type=6)
+E chromium: SurfaceEGL.cpp:259 (operator()): eglGetFrameTimestampsANDROID failed: 0x00003002
+
+Result: BLOCKED
+Reason: Chrome renderer/GPU process instability in the local Android emulator.
