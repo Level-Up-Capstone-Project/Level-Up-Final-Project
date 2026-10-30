@@ -1,0 +1,22 @@
+Command run on 2026-10-30:
+npm run build
+
+> level-up-frontend@1.0.0 build
+> next build --webpack
+
+Next.js 16.4.2 (webpack)
+Creating optimized production build ...
+Compiled successfully in 12.5s
+Running TypeScript ...
+Finished TypeScript in 5.7s
+Collecting page data using 4 workers ...
+Generating static pages using 4 workers (3/3)
+Finalizing page optimization ...
+Collecting build traces ...
+
+Route (app)
+/             Static
+/_not-found   Static
+
+Exit code: 0
+Result: PASS
