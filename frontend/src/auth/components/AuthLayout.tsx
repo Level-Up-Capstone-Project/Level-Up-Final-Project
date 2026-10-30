@@ -14,16 +14,16 @@ export default function AuthLayout({ model, children }: {
     children: React.ReactNode;
 }) {
     const styles = useAuthStyles();
-    const scale = Math.min(model.width, 480) / 408.393;
+    const scale = model.width / 408.393;
     const { screen, loadedAssets, assetError, signup, signin, recovery, submitting, message, scroll, back, title, minHeight } = model;
     const darkDesign = true;
     if (!loadedAssets && !assetError)
         return <View style={styles.safe}/>;
     return <SafeAreaView style={[styles.safe,darkDesign && {backgroundColor:'#000'}]} edges={['top', 'bottom']}>
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={[styles.canvas, { minHeight, maxWidth: 480, paddingBottom: 32 * scale }]}>
+      <ScrollView ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={[styles.canvas, { minHeight, paddingBottom: 32 * scale }]}>
 
-        {darkDesign && <AuthBackground width={Math.min(model.width,480)} height={Math.max(model.height,885.372*scale)} top={-model.insets.top}/>}
+        {darkDesign && <AuthBackground width={model.width} height={Math.max(model.height,885.372*scale)} top={-model.insets.top}/>}
         <View style={[styles.body, { paddingHorizontal: 23 * scale,zIndex:1 }]}>
           <View style={[styles.header,{marginTop:screenHeaderTop(scale,model.insets.top)-model.insets.top,zIndex:2,opacity:1}]}>
             <ScreenHeader title={title.toUpperCase()} onBack={recovery?back:undefined} backLabel="Go back" disabled={submitting} scale={scale}/>

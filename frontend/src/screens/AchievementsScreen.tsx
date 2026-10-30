@@ -83,7 +83,7 @@ export default function AchievementsScreen({model}:{model:AppModel}) {
     </View></View>;
 }
 const s=StyleSheet.create({
-    safe:{flex:1,backgroundColor:'#000'},canvas:{flex:1,width:'100%',maxWidth:480,alignSelf:'center',overflow:'hidden'},
+    safe:{flex:1,backgroundColor:'#000'},canvas:{flex:1,width:'100%',alignSelf:'stretch',overflow:'hidden'},
     header:{flexDirection:'row',alignItems:'center',opacity:.7},back:{minWidth:44,minHeight:44,justifyContent:'center',alignItems:'center'},heading:{color:'#fff',fontWeight:'700',flex:1},
     operation:{color:'#d4af53',fontWeight:'700',textAlign:'center'},description:{color:'#fff',textAlign:'center'},
     track:{flex:1,height:6,borderRadius:50,backgroundColor:'#a6a6a4',overflow:'hidden'},fill:{height:'100%',borderRadius:50,backgroundColor:'#d4af53'},count:{color:'#e2e2e2',minWidth:48},

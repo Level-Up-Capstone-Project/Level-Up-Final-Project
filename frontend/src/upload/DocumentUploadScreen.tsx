@@ -24,7 +24,7 @@ export default function DocumentUploadScreen({ model, kind }: { model: AppModel;
     const tasks = transcript ? transcriptTasks : cvTasks;
     const { width, height } = useWindowDimensions();
     const insets = useSafeAreaInsets();
-    const scale = Math.min(width, 480) / 408.393;
+    const scale = width / 408.393;
     const [choosing, setChoosing] = useState(false);
     const { error, go, goBack } = model;
     const document = transcript ? model.transcriptDocument : model.cvDocument;

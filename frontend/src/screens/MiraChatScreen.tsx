@@ -15,7 +15,7 @@ import MessageText from '../chat/MessageText';
 export default function MiraChatScreen({ model }: { model: AppModel }) {
     const { width, height } = useWindowDimensions();
     const insets = useSafeAreaInsets();
-    const scale = Math.min(width, 480) / 408.393;
+    const scale = width / 408.393;
     const canvasHeight = Math.max(885.372, height / scale);
     const conversation = useRef<ScrollView>(null);
     const page = useRef<ScrollView>(null);
