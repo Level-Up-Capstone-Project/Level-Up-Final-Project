@@ -136,28 +136,20 @@ namespace CapstoneProjectBE.Services
 
         public async Task<bool> ResetPasswordAsync(CompletePasswordResetRequest request, CancellationToken cancellationToken)
         {
-            string email = request.Email.Trim().ToLowerInvariant();
-            User? user = await _context.Users
-                .Include(item => item.PasswordReset)
-                .SingleOrDefaultAsync(item => item.Email == email && item.IsActive, cancellationToken);
-            PasswordReset? reset = user?.PasswordReset;
-            if (user is null || reset is null || reset.ExpiresAt <= DateTime.UtcNow || reset.FailedAttempts >= 5)
-                return false;
+            var verifiedReset = await GetVerifiedPasswordResetAsync(
+                request.Email,
+                request.VerificationCode,
+                cancellationToken);
+            if (verifiedReset is null) return false;
 
-            var verification = _resetCodeHasher.VerifyHashedPassword(reset, reset.CodeHash, request.VerificationCode);
-            if (verification == PasswordVerificationResult.Failed)
-            {
-                reset.FailedAttempts++;
-                await _context.SaveChangesAsync(cancellationToken);
-                return false;
-            }
+            var (user, reset) = verifiedReset.Value;
 
             user.PasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
             _context.PasswordResets.Remove(reset);
             await _context.SaveChangesAsync(cancellationToken);
             try
             {
-                await _emailService.SendPasswordChangedAsync(email, cancellationToken);
+                await _emailService.SendPasswordChangedAsync(user.Email, cancellationToken);
             }
             catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException)
             {
@@ -165,6 +157,9 @@ namespace CapstoneProjectBE.Services
             }
             return true;
         }
+
+        public async Task<bool> VerifyPasswordResetCodeAsync(VerifyPasswordResetCodeRequest request, CancellationToken cancellationToken) =>
+            await GetVerifiedPasswordResetAsync(request.Email, request.VerificationCode, cancellationToken) is not null;
 
         public async Task<VerifyEmailResponse?> VerifyEmailAsync(VerifyEmailRequest request, CancellationToken cancellationToken)
         {
@@ -259,22 +254,27 @@ namespace CapstoneProjectBE.Services
             await _emailService.SendVerificationCodeAsync(email, verificationCode, cancellationToken);
         }
 
-        public async Task<LoginResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
+        public async Task<LoginResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
         {
             string email = request.Email.Trim().ToLowerInvariant();
 
             User? user = await _context.Users.Include(user => user.UserProfile).SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
 
-            if (user is null || !user.IsActive)
+            if (user is null)
             {
-                return null;
+                return LoginResult.InvalidCredentials();
             }
 
             PasswordVerificationResult passwordResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
 
             if(passwordResult == PasswordVerificationResult.Failed)
             {
-                return null;
+                return LoginResult.InvalidCredentials();
+            }
+
+            if (!user.IsActive)
+            {
+                return LoginResult.VerificationRequired();
             }
 
             if (passwordResult == PasswordVerificationResult.SuccessRehashNeeded)
@@ -286,7 +286,7 @@ namespace CapstoneProjectBE.Services
 
             string token = _jwtTokenService.GenerateToken(user);
 
-            return new LoginResponse
+            return LoginResult.Success(new LoginResponse
             {
                 Token = token,
                 User = new AuthUserDto
@@ -296,7 +296,7 @@ namespace CapstoneProjectBE.Services
                     IsActive = user.IsActive
                 },
                 ProfileCompleted = user.UserProfile?.ProfileCompleted ?? false
-            };
+            });
         }
 
         public async Task<AuthUserDto?> GetCurrentUserAsync(Guid userId, CancellationToken cancellationToken)
@@ -318,5 +318,32 @@ namespace CapstoneProjectBE.Services
             .Select(value => value.Trim())
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
+
+        private async Task<(User User, PasswordReset Reset)?> GetVerifiedPasswordResetAsync(
+            string emailAddress,
+            string verificationCode,
+            CancellationToken cancellationToken)
+        {
+            string email = emailAddress.Trim().ToLowerInvariant();
+            User? user = await _context.Users
+                .Include(item => item.PasswordReset)
+                .SingleOrDefaultAsync(item => item.Email == email && item.IsActive, cancellationToken);
+            PasswordReset? reset = user?.PasswordReset;
+            if (user is null || reset is null || reset.ExpiresAt <= DateTime.UtcNow || reset.FailedAttempts >= 5)
+                return null;
+
+            PasswordVerificationResult verification = _resetCodeHasher.VerifyHashedPassword(
+                reset,
+                reset.CodeHash,
+                verificationCode);
+            if (verification == PasswordVerificationResult.Failed)
+            {
+                reset.FailedAttempts++;
+                await _context.SaveChangesAsync(cancellationToken);
+                return null;
+            }
+
+            return (user, reset);
+        }
     }
 }

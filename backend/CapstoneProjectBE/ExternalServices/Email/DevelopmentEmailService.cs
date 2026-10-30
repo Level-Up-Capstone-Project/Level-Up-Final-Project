@@ -20,7 +20,7 @@
             {
                 throw new InvalidOperationException("The dev email service cannot be used outside development");
             }
-            _logger.LogInformation("DEVELOPMENT ONLY - Verification code for {RecipientEmail}: {VerificationCode}", recipientEmail, verificationCode);
+            _logger.LogInformation("DEVELOPMENT ONLY - Verification email delivery simulated for {RecipientEmail}.", recipientEmail);
             return Task.CompletedTask;
         }
 
@@ -30,7 +30,7 @@
             {
                 throw new InvalidOperationException("The dev email service cannot be used outside development");
             }
-            _logger.LogInformation("DEVELOPMENT ONLY - Password reset code for {RecipientEmail}: {VerificationCode}", recipientEmail, verificationCode);
+            _logger.LogInformation("DEVELOPMENT ONLY - Password reset email delivery simulated for {RecipientEmail}.", recipientEmail);
             return Task.CompletedTask;
         }
 
