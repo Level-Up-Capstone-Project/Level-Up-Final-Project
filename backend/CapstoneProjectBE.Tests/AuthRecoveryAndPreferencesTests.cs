@@ -75,12 +75,50 @@ public sealed class AuthRecoveryAndPreferencesTests
             Email = user.Email, VerificationCode = email.ResetCode, NewPassword = "NewPassword123!"
         };
 
+        Assert.False(await service.VerifyPasswordResetCodeAsync(new VerifyPasswordResetCodeRequest
+        {
+            Email = user.Email, VerificationCode = "000000"
+        }, default));
+        Assert.True(await service.VerifyPasswordResetCodeAsync(new VerifyPasswordResetCodeRequest
+        {
+            Email = user.Email, VerificationCode = email.ResetCode
+        }, default));
         Assert.True(await service.ResetPasswordAsync(request, default));
         Assert.False(await service.ResetPasswordAsync(request, default));
         var updated = await context.Users.SingleAsync();
         Assert.Equal(PasswordVerificationResult.Success, hasher.VerifyHashedPassword(updated, updated.PasswordHash, request.NewPassword));
         Assert.Empty(context.PasswordResets);
         Assert.True(email.PasswordChangedNotificationSent);
+    }
+
+    [Fact]
+    public async Task LoginDirectsOnlyCorrectUnverifiedCredentialsToVerification()
+    {
+        await using var context = CreateContext();
+        var email = new CapturingEmailService();
+        var hasher = new PasswordHasher<User>();
+        var user = new User
+        {
+            UserID = Guid.NewGuid(), Email = "pending@example.com", CreatedAt = DateTime.UtcNow, IsActive = false
+        };
+        user.PasswordHash = hasher.HashPassword(user, "CorrectPassword123!");
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+        var service = CreateAuthService(context, email, hasher);
+
+        LoginResult wrongPassword = await service.LoginAsync(new LoginRequest
+        {
+            Email = user.Email, Password = "WrongPassword123!"
+        }, default);
+        LoginResult correctPassword = await service.LoginAsync(new LoginRequest
+        {
+            Email = user.Email, Password = "CorrectPassword123!"
+        }, default);
+
+        Assert.Equal(LoginStatus.InvalidCredentials, wrongPassword.Status);
+        Assert.Null(wrongPassword.Response);
+        Assert.Equal(LoginStatus.VerificationRequired, correctPassword.Status);
+        Assert.Null(correctPassword.Response);
     }
 
     private static AppDbContext CreateContext() =>
