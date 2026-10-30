@@ -1,0 +1,23 @@
+Command run on 2026-10-30:
+Production frontend and Release backend started locally, then measured with curl.exe.
+
+Initial request:
+URL=http://127.0.0.1:3000/ STATUS=200 START=0.169723s TOTAL=0.169834s
+
+Warm response checks:
+RUN=1 URL=http://127.0.0.1:3000/ STATUS=200 START=0.004312s TOTAL=0.004423s
+RUN=1 URL=http://127.0.0.1:5036/api/careers STATUS=200 START=0.218321s TOTAL=0.218469s
+RUN=1 URL=http://127.0.0.1:5036/api/jobs STATUS=200 START=0.413936s TOTAL=0.414017s
+RUN=1 URL=http://127.0.0.1:5036/api/skills STATUS=200 START=0.199976s TOTAL=0.200050s
+RUN=2 URL=http://127.0.0.1:3000/ STATUS=200 START=0.002959s TOTAL=0.003025s
+RUN=2 URL=http://127.0.0.1:5036/api/careers STATUS=200 START=0.207325s TOTAL=0.207434s
+RUN=2 URL=http://127.0.0.1:5036/api/jobs STATUS=200 START=0.406528s TOTAL=0.406628s
+RUN=2 URL=http://127.0.0.1:5036/api/skills STATUS=200 START=0.214064s TOTAL=0.214285s
+RUN=3 URL=http://127.0.0.1:3000/ STATUS=200 START=0.018585s TOTAL=0.018650s
+RUN=3 URL=http://127.0.0.1:5036/api/careers STATUS=200 START=0.213902s TOTAL=0.214015s
+RUN=3 URL=http://127.0.0.1:5036/api/jobs STATUS=200 START=0.387685s TOTAL=0.387805s
+RUN=3 URL=http://127.0.0.1:5036/api/skills STATUS=200 START=0.211960s TOTAL=0.212043s
+
+Acceptance threshold used for this local execution: successful HTTP response below 2.0 seconds after warm-up.
+Result: REL-001 PASS.
+REL-002 remains BLOCKED because the authenticated dashboard, profile and roadmap screen timings could not be captured without a working signed-in test fixture. The public API timings above are retained as partial evidence.

@@ -1,0 +1,21 @@
+Command run on 2026-10-30:
+npm test
+
+Relevant raw test output:
+PASS CV uploads before analysis using serialized cvid and bearer token
+PASS CV analysis retries reuse the uploaded CV
+PASS replacing the file cancels the old run and starts the new document
+PASS failure does not loop uploads and manual retry remains available
+PASS roadmap back button describes history-based navigation
+PASS the signed-in route survives a refresh and legacy sessions are migrated
+PASS empty unauthorized response is actionable
+PASS invalid server JSON is rejected
+
+Suite summary:
+tests 61
+pass 61
+fail 0
+cancelled 0
+
+Result: REL-005 PASS; REL-006 PASS; REL-008 PASS; REL-009 PASS.
+REL-007 remains BLOCKED because the automated cancellation check is only partial evidence for the required slow-network cross-screen navigation test.

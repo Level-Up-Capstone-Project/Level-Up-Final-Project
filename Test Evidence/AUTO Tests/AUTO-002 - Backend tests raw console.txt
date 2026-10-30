@@ -1,0 +1,10 @@
+Command run on 2026-10-30:
+dotnet test CapstoneProjectBE.sln --configuration Release --no-restore
+
+Test run for CapstoneProjectBE.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.1 (x64)
+
+Passed! - Failed: 0, Passed: 88, Skipped: 0, Total: 88, Duration: 4 s
+
+Exit code: 0
+Result: PASS

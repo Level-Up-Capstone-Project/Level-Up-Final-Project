@@ -1,0 +1,25 @@
+Section 19 blocked tests - 2026-10-30
+
+REL-002 - Non-AI API screens respond acceptably
+Status: BLOCKED
+Partial evidence: public careers, jobs and skills endpoints responded below 0.42 seconds after warm-up.
+Needed: a working authenticated test account. Time the dashboard, jobs, profile and roadmap screens in Edge and capture their loading feedback.
+
+REL-003 - AI operations show immediate progress
+Status: BLOCKED
+Needed: a working authenticated test account, a valid CV fixture, and configured live AI credentials. Capture Edge before starting analysis and while the progress/loading state is visible.
+
+REL-004 - Offline sign-in or data action fails clearly
+Status: BLOCKED
+Needed: a working authenticated test account. In Edge DevTools set Network to Offline, perform sign-in or a saved-data action, and capture the user-facing error and recovery after returning Online.
+
+REL-007 - Rapid navigation does not create stale screen updates
+Status: BLOCKED
+Partial evidence: automated cancellation coverage confirms an old CV run is cancelled when its file is replaced.
+Needed: throttle the network in Edge and navigate rapidly between dashboard, jobs, learning and analysis while requests are active; capture that an old response does not overwrite the current screen.
+
+REL-010 - Backend restart during session recoverable
+Status: BLOCKED
+Needed: a working authenticated test account and permission to restart the backend while the session is active. Capture the temporary failure, restart, retry, and successful recovery without corrupted state.
+
+No defect was raised because these tests could not reach their required preconditions.

@@ -1,0 +1,14 @@
+AUTO-005 - Full P0 regression after fixes
+Status: BLOCKED
+Date: 2026-10-30
+
+The local automated regression is green (61 frontend tests and 88 backend tests), but this acceptance test requires the team's combined completed P0 regression register across all project sections.
+
+Needed to complete:
+1. Merge the current results from every team member into the master test register.
+2. Filter Priority = P0.
+3. Confirm every P0 row has a final status of Pass or Pass after Fix.
+4. Re-run any P0 row affected by a recent fix.
+5. Capture the filtered P0 register and final totals.
+
+No defect was raised because the missing input is the consolidated team evidence, not an observed product failure.
