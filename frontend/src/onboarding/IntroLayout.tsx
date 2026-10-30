@@ -17,7 +17,9 @@ export default function IntroLayout({ go, step, image, title, description, copyL
 }) {
     const { width, height } = useWindowDimensions();
     const insets = useSafeAreaInsets();
-    const canvasWidth = Math.min(width, 480);
+    // The onboarding artwork and copy scale from the actual phone width.
+    // Capping this at the original design width created black side gutters on wider phones.
+    const canvasWidth = width;
     const scale = canvasWidth / 408.393;
     const canvasHeight = Math.max(height, 885.372 * scale, insets.top + insets.bottom + 640 * scale);
     /** Moves to the next introductory screen or sign-in. */

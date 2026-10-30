@@ -6,8 +6,11 @@ import type { IntroProps } from '../onboarding/IntroLayout';
 export default function SplashScreen({ go }: IntroProps) {
     const { width, height } = useWindowDimensions();
     const [ready, setReady] = useState(false);
-    const [canvas, setCanvas] = useState({ width: Math.min(width, 480), height });
+    const [canvas, setCanvas] = useState({ width, height });
     const canvasWidth = canvas.width;
+    useEffect(() => {
+        setCanvas({ width, height });
+    }, [width, height]);
     useEffect(
         /** Synchronises component state with the effect dependencies. */
          () => {
@@ -34,5 +37,6 @@ export default function SplashScreen({ go }: IntroProps) {
 }
 const styles = StyleSheet.create({
     safe: { flex: 1, backgroundColor: '#000' },
-    canvas: { flex: 1, width: '100%', maxWidth: 480, alignSelf: 'center', overflow: 'hidden' },
+    // Use the device viewport rather than a fixed design-width canvas.
+    canvas: { flex: 1, width: '100%', alignSelf: 'stretch', overflow: 'hidden' },
 });
