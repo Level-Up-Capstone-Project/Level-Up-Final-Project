@@ -2,6 +2,9 @@
 import ScreenHeader, {screenHeaderTop} from '../components/ScreenHeader';
 import {apiRequest, ApiError} from '../api/client';
 import {saveProfile} from '../api/profile';
+import CareerPreferencesFields from '../components/CareerPreferencesFields';
+import WorkAreaPicker from '../location/WorkAreaPicker';
+import type {WorkArea} from '../location/types';
 import {useEffect, useState} from 'react';
 import {KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -21,6 +24,9 @@ export default function ProfileSettingsScreen({model}: {model: AppModel}) {
     const [experienceLevel, setExperienceLevel] = useState(model.account.experienceLevel || '');
     const [interests, setInterests] = useState(model.account.interests || '');
     const [targetCareerID, setTargetCareerID] = useState(model.account.targetCareerID || '');
+    const [industry, setIndustry] = useState(model.account.industry || '');
+    const [targetRoles, setTargetRoles] = useState<string[]>(model.account.targetRoles ?? []);
+    const [workAreas, setWorkAreas] = useState<WorkArea[]>(model.account.workAreas ?? []);
     const [careers, setCareers] = useState<Career[]>([]);
     const [suggestions, setSuggestions] = useState<Suggestions | null>(null);
     const [notice, setNotice] = useState('');
@@ -47,22 +53,29 @@ export default function ProfileSettingsScreen({model}: {model: AppModel}) {
             return;
         }
         setSaving(true); setNotice('');
+        // Keep the chosen career first in targetRoles so the dashboard's role sync does not switch it back.
+        const chosen = careers.find(item => item.careerID === targetCareerID);
+        const existingRoles = targetRoles;
+        const roles = chosen
+            ? [chosen.careerName, ...existingRoles.filter(role => role.trim().toLowerCase() !== chosen.careerName.trim().toLowerCase())]
+            : existingRoles;
         try {
             const profile = await saveProfile(model.account.token, {
                 fName: firstName.trim(), lName: lastName.trim(), qualification: qualification.trim(),
                 fieldOfStudy: fieldOfStudy.trim(), experienceLevel: experienceLevel.trim(),
                 interests: interests.trim(), targetCareerID: targetCareerID || null,
-                industry: model.account.industry ?? '', phone: model.account.phone ?? '',
-                targetRoles: model.account.targetRoles ?? [], workAreas: model.account.workAreas ?? [],
+                industry: industry.trim(), phone: model.account.phone ?? '',
+                targetRoles: roles, workAreas,
             });
-            const career = careers.find(item => item.careerID === profile.targetCareerID);
             model.setAccount(account => ({...account, name: `${profile.fName} ${profile.lName}`.trim(),
                 firstName: profile.fName, lastName: profile.lName, qualification: profile.qualification,
                 fieldOfStudy: profile.fieldOfStudy, experienceLevel: profile.experienceLevel ?? '',
                 interests: profile.interests ?? '', targetCareerID: profile.targetCareerID ?? undefined,
                 industry: profile.industry ?? '', phone: profile.phone ?? '',
-                targetRoles: career ? [career.careerName] : profile.targetRoles ?? [],
+                targetRoles: profile.targetRoles ?? roles,
                 workAreas: profile.workAreas ?? []}));
+            setTargetRoles(profile.targetRoles ?? roles);
+            model.setRole(0);
             model.setCareerAssessment(null);
             setNotice('Profile saved to your account.');
         } catch (error) {
@@ -71,9 +84,9 @@ export default function ProfileSettingsScreen({model}: {model: AppModel}) {
     };
 
     const fields = [
-        ['firstName', 'First name', firstName, setFirstName, 100], ['lastName', 'Last name', lastName, setLastName, 100],
-        ['qualification', 'Qualification', qualification, setQualification, 200], ['fieldOfStudy', 'Field of study', fieldOfStudy, setFieldOfStudy, 150],
-        ['experienceLevel', 'Experience level', experienceLevel, setExperienceLevel, 100], ['interests', 'Interests', interests, setInterests, 1000],
+        ['firstName', 'First name', firstName, setFirstName, 50], ['lastName', 'Last name', lastName, setLastName, 50],
+        ['qualification', 'Qualification', qualification, setQualification, 100], ['fieldOfStudy', 'Field of study', fieldOfStudy, setFieldOfStudy, 100],
+        ['experienceLevel', 'Experience level', experienceLevel, setExperienceLevel, 50], ['interests', 'Interests', interests, setInterests, 1000],
     ] as const;
 
     return <KeyboardAvoidingView style={s.safe} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -83,7 +96,12 @@ export default function ProfileSettingsScreen({model}: {model: AppModel}) {
             {fields.map(([id, label, value, change, maxLength]) => <View key={id} style={s.field}><Text style={s.label}>{label}</Text><TextInput
                 accessibilityLabel={label} value={value} onChangeText={change} placeholder={label} placeholderTextColor="#696967"
                 onFocus={() => setFocus(id)} onBlur={() => setFocus('')} maxLength={maxLength}
-                multiline={id === 'interests'} style={[s.input, id === 'interests' && s.multiline, focus === id && s.focused]}/></View>)}
+                multiline={id === 'interests'} style={[s.input, id === 'interests' && s.multiline, focus === id && s.focused]}/>
+                {value.length >= maxLength * 0.8 && <Text accessibilityLiveRegion="polite" style={[s.counter, value.length >= maxLength && s.counterLimit]}>{value.length >= maxLength ? `Maximum of ${maxLength} characters reached` : `${value.length}/${maxLength} characters`}</Text>}</View>)}
+            <View style={s.field}><Text style={s.label}>Career preferences</Text>
+                <CareerPreferencesFields industry={industry} onIndustryChange={setIndustry} targetRoles={targetRoles} onRolesChange={setTargetRoles}/>
+                <WorkAreaPicker value={workAreas} onChange={setWorkAreas}/>
+            </View>
             <View style={s.field}><Text style={s.label}>Suggested careers from your documents</Text>
                 <Text style={s.copy}>{suggestions?.suggestions.length ? 'Suggestions are based on skills matched to our career catalogue. Choose a career and save your profile.' : 'Analyse your CV and transcript to find career suggestions supported by their detected skills.'}</Text>
                 {suggestions?.suggestions.map(career => <Pressable key={career.careerID} accessibilityRole="radio" accessibilityState={{selected:targetCareerID === career.careerID}} onPress={() => setTargetCareerID(career.careerID)} style={[s.option, targetCareerID === career.careerID && s.selected]}><Text style={s.label}>{career.careerName}</Text><Text style={s.copy}>{career.matchedSkills.map(skill => `${skill.skillName} (${skill.fromCv && skill.fromTranscript ? 'CV and transcript' : skill.fromCv ? 'CV' : 'transcript'})`).join(', ')}</Text></Pressable>)}
@@ -108,4 +126,5 @@ const s = StyleSheet.create({
     multiline:{minHeight:90,textAlignVertical:'top'}, focused:{borderColor:'#d4af53'}, option:{minHeight:48,borderWidth:1,borderColor:'#353e44',borderRadius:10,padding:14,marginTop:8,backgroundColor:'#060f14'},
     selected:{borderColor:'#d4af53'}, email:{color:'#a6a6a4',fontSize:14,marginBottom:18}, notice:{color:'#e8b866',fontSize:14,lineHeight:22,marginBottom:16},
     save:{minHeight:50,backgroundColor:'#d4af53',borderRadius:10,alignItems:'center',justifyContent:'center'}, disabled:{opacity:.6}, saveText:{color:'#000',fontSize:16,fontWeight:'700'},
+    counter:{color:'#a6a6a4',fontSize:12,marginTop:6}, counterLimit:{color:'#e8b866'},
 });

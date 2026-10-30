@@ -8,22 +8,22 @@ namespace CapstoneProjectBE.DTOs.Profile
     public class UpdateProfileDto
     {
         [Required]
-        [StringLength (100)]
+        [StringLength(50)]
         public string FName { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(100)]
+        [StringLength(50)]
         public string LName {  get; set; } = string.Empty;
 
         [Required]
-        [StringLength(200)]
+        [StringLength(100)]
         public string Qualification {  get; set; } = string.Empty;
 
         [Required]
-        [StringLength(150)]
+        [StringLength(100)]
         public string FieldOfStudy {  get; set; } = string.Empty;
 
-        [StringLength(100)]
+        [StringLength(50)]
         public string? ExperienceLevel { get; set; }
 
         [StringLength(1000)]
