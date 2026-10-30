@@ -1,0 +1,10 @@
+Command run on 2026-10-30:
+curl.exe -sS -o NUL -w "HTTP %{http_code}\ncontent_type=%{content_type}\ntime_total=%{time_total}s\n" http://localhost/api/profile
+
+Actual output:
+HTTP 401
+content_type=
+time_total=0.234699s
+
+Result: PASS
+Expected: requests without a valid bearer token are rejected with 401.
