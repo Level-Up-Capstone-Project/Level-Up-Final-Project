@@ -40,6 +40,37 @@ npm start
 
 `npm start` serves a completed production build on port 3000.
 
+## Android APK
+
+The Android app bundles the exported frontend and calls the production API at
+`https://api.levelupnow.co.za`. The frontend Azure service does not need to be
+running for the app to open, but the API must be online for connected features.
+
+Requirements:
+
+- Android Studio with Android SDK 36
+- A Java 24-compatible Gradle installation (the included wrapper is used)
+
+Build an installable debug APK on Windows:
+
+```powershell
+npm run android:apk
+```
+
+The APK is written to `android/app/build/outputs/apk/debug/app-debug.apk`.
+The normal `npm run build` command still produces the standalone Azure web
+deployment; only the Android build uses Next.js static export.
+
+A release build requires the private `android/levelup-release.jks` key and its
+ignored `android/keystore.properties` file, then runs with:
+
+```powershell
+npm run android:release
+```
+
+Keep the release keystore and credentials private and backed up. Future updates
+to the same Android application ID must be signed with the same key.
+
 ## Backend integration
 
 The backend is expected at https://localhost:7286 with Swagger at https://localhost:7286/swagger. Its local CORS policy must allow http://localhost:3000, and its HTTPS certificate must be trusted by the browser.
